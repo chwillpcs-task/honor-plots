@@ -2,179 +2,171 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Honor Plots - Multi-View LIFF Frontend</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Honor Plots — Our Times</title>
   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
-    :root {
-      --primary-color: #06C755;
-      --bg-color: #f4f6f8;
-      --card-bg: #ffffff;
-      --text-color: #333333;
-    }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-    }
-    header {
-      background-color: var(--primary-color);
-      color: white;
-      padding: 16px;
-      text-align: center;
-      font-size: 20px;
-      font-weight: bold;
-    }
-    nav {
-      display: flex;
-      justify-content: space-around;
-      background-color: #ffffff;
-      border-bottom: 1px solid #e2e8f0;
-    }
-    nav button {
-      flex: 1;
-      padding: 12px;
-      border: none;
-      background: none;
-      font-size: 15px;
-      font-weight: 600;
-      color: #666;
-      cursor: pointer;
-      border-bottom: 3px solid transparent;
-    }
-    nav button.active {
-      color: var(--primary-color);
-      border-bottom-color: var(--primary-color);
-    }
-    .view {
-      display: none;
-      padding: 20px;
-    }
-    .view.active {
-      display: block;
-    }
-    .card {
-      background: var(--card-bg);
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    .btn {
-      display: inline-block;
-      padding: 10px 20px;
-      background-color: var(--primary-color);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      text-decoration: none;
-    }
-    .profile-img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      margin-bottom: 10px;
-    }
+    :root { --primary: #0072B2; --secondary: #009E73; --bg: #FDFBF7; --surface: #FFF; --text: #1F2937; --muted: #4B5563; --border: #E5E7EB; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; padding-bottom: 2rem; }
+    nav.tabs { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; }
+    .tab-btn { flex: 1; padding: 0.85rem; border: none; background: none; font-size: 0.9rem; font-weight: 600; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; min-height: 48px; }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: #F8FAFC; }
+    .container { max-width: 600px; margin: 1rem auto; padding: 0 1rem; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    h1 { font-size: 1.35rem; color: var(--primary); margin-bottom: 0.25rem; }
+    p.sub { font-size: 0.875rem; color: var(--muted); margin-bottom: 1.25rem; }
+    .group { margin-bottom: 1rem; }
+    label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.25rem; }
+    input[type="text"], textarea { width: 100%; padding: 0.65rem 0.75rem; font-size: 0.95rem; border: 1px solid var(--border); border-radius: 6px; background: #FAFAFA; color: var(--text); }
+    input[type="text"]:focus, textarea:focus { outline: none; border-color: var(--primary); background: #FFF; }
+    textarea { min-height: 100px; resize: vertical; }
+    .helper { font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem; }
+    .notice { background: #F9FAFB; border-left: 3px solid var(--primary); padding: 0.75rem; margin: 1.25rem 0 1rem; font-size: 0.8rem; color: var(--muted); }
+    .check-group { display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 1.25rem; font-size: 0.85rem; }
+    .check-group input { margin-top: 0.2rem; min-width: 18px; min-height: 18px; }
+    .btn { width: 100%; background: var(--primary); color: #FFF; border: none; border-radius: 6px; padding: 0.85rem; font-size: 1rem; font-weight: 600; cursor: pointer; min-height: 48px; }
+    .btn:hover { background: #005a8e; }
+    .btn:disabled { background: #9CA3AF; cursor: not-allowed; }
+    #msg { margin-top: 1rem; padding: 0.75rem; border-radius: 6px; font-size: 0.875rem; display: none; }
+    .success { background: #E6F4EA; color: #137333; display: block !important; }
+    #map-box { height: 420px; border-radius: 12px; border: 1px solid var(--border); z-index: 1; }
+    .story-card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); padding: 1.25rem; margin-bottom: 1rem; }
+    .story-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); margin-bottom: 0.5rem; border-bottom: 1px dashed var(--border); padding-bottom: 0.35rem; }
+    .story-place { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+    .story-era { display: inline-block; background: #EBF8FF; color: #0072B2; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; margin: 0.25rem 0 0.5rem; }
+    .story-text { font-size: 0.95rem; color: #374151; font-style: italic; }
   </style>
 </head>
 <body>
-  <header>Honor Plots LIFF</header>
-  
-  <nav>
-    <button class="active" onclick="switchView('home')">Home</button>
-    <button onclick="switchView('profile')">Profile</button>
-    <button onclick="switchView('actions')">Actions</button>
-  </nav>
+<nav class="tabs">
+  <button class="tab-btn active" onclick="showTab('form')">✍️ Mark Plot</button>
+  <button class="tab-btn" onclick="showTab('map')">🗺️ Map</button>
+  <button class="tab-btn" onclick="showTab('stories')">📖 Stories</button>
+</nav>
 
-  <main>
-    <!-- Home View -->
-    <section id="home-view" class="view active">
-      <div class="card">
-        <h2>Welcome to Honor Plots</h2>
-        <p>This is a standalone multi-view LINE Front-end Framework (LIFF) web application.</p>
-        <p id="liff-status">Initializing LIFF SDK...</p>
-      </div>
-    </section>
-
-    <!-- Profile View -->
-    <section id="profile-view" class="view">
-      <div class="card">
-        <h2>User Profile</h2>
-        <div id="profile-content">
-          <p>Please log in through LIFF to see profile details.</p>
+<div class="container">
+  <div id="panel-form" class="panel active">
+    <div class="card">
+      <h1>Mark an Honor Plot</h1>
+      <p class="sub">Honor a human-scale place and time in living community memory.</p>
+      <form id="plot-form">
+        <div class="group">
+          <label for="place">Place or Landmark</label>
+          <input type="text" id="place" required placeholder="e.g., 12th & Vine, Old Church Porch">
+          <div class="helper">A specific corner, building, porch, or landmark.</div>
         </div>
-      </div>
-    </section>
+        <div class="group">
+          <label for="era">Era or Time</label>
+          <input type="text" id="era" required placeholder="e.g., Summer 1974, My childhood years">
+          <div class="helper">A year, season, or era—exact calendar dates are not required.</div>
+        </div>
+        <div class="group">
+          <label for="memory">Story or Memory</label>
+          <textarea id="memory" required placeholder="What do you remember about this place in that era? Who was there?"></textarea>
+          <div class="helper">In your own words. Small, everyday memories are welcomed.</div>
+        </div>
+        <div class="notice">
+          <strong>Symbolic Tribute Notice:</strong> An Honor Plot is a symbolic cultural tribute marking a human-scale place and time. It represents personal and community memory; it does not constitute legal title, property ownership, or a financial instrument. Subject to the participant's independent tax and legal counsel.
+        </div>
+        <div class="check-group">
+          <input type="checkbox" id="ack" required>
+          <label for="ack">I understand this is a symbolic personal memory mark.</label>
+        </div>
+        <button type="submit" class="btn" id="sub-btn">Record Honor Plot</button>
+      </form>
+      <div id="msg"></div>
+    </div>
+  </div>
 
-    <!-- Actions View -->
-    <section id="actions-view" class="view">
-      <div class="card">
-        <h2>LIFF Actions</h2>
-        <p>Interact with LINE Messaging API and LIFF capabilities:</p>
-        <button class="btn" onclick="sendLiffMessage()">Send Message</button>
-        <button class="btn" onclick="closeLiffWindow()">Close Window</button>
-      </div>
-    </section>
-  </main>
+  <div id="panel-map" class="panel">
+    <div id="map-box"></div>
+    <p class="helper" style="margin-top:0.5rem; text-align:center;">Tap any blue marker to view the community memory recorded at that location.</p>
+  </div>
 
-  <script>
-    function switchView(viewName) {
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-      document.getElementById(viewName + '-view').classList.add('active');
-      event.target.classList.add('active');
-    }
+  <div id="panel-stories" class="panel">
+    <div id="stories-list"></div>
+  </div>
+</div>
 
-    async function initializeLiff() {
-      try {
-        await liff.init({ liffId: "YOUR_LIFF_ID" });
-        document.getElementById('liff-status').innerText = "LIFF SDK Initialized!";
-        if (liff.isLoggedIn()) {
-          loadProfile();
-        }
-      } catch (err) {
-        document.getElementById('liff-status').innerText = "LIFF Initialization: Running in Browser / Standalone View.";
-      }
-    }
+<script>
+  let liffUserId = "anonymous";
+  const LIFF_ID = "2012292060-Vfqk8diJ";
+  const demoPlots = [
+    { place: "12th & Vine", era: "Summer 1974", memory: "Grandmother's porch on Sunday afternoons. Gospel records drifting from across the street, and sweet watermelon slices on ice.", lat: 39.0997, lon: -94.5786, date: "Community Archive" },
+    { place: "Akasaka Cultural Corner", era: "Autumn 1982", memory: "Late evening soul and jazz listening sessions in a quiet basement record salon, bridging American roots and Tokyo artists.", lat: 35.6724, lon: 139.7348, date: "Community Archive" }
+  ];
 
-    async function loadProfile() {
-      try {
-        const profile = await liff.getProfile();
-        document.getElementById('profile-content').innerHTML = `
-          <img src="${profile.pictureUrl}" class="profile-img" alt="Profile Picture">
-          <h3>${profile.displayName}</h3>
-          <p>${profile.statusMessage || ''}</p>
-        `;
-      } catch (err) {
-        console.error('Error fetching profile', err);
-      }
-    }
+  let mapInstance = null;
+  let markers = [];
 
-    function sendLiffMessage() {
+  async function startLIFF() {
+    try {
+      await liff.init({ liffId: LIFF_ID });
       if (liff.isLoggedIn()) {
-        liff.sendMessages([{
-          type: 'text',
-          text: 'Hello from Honor Plots LIFF App!'
-        }]).then(() => alert('Message Sent!'))
-          .catch(err => alert('Failed to send message: ' + err));
-      } else {
-        alert('LIFF messaging is available inside LINE client.');
+        const p = await liff.getProfile();
+        liffUserId = p.userId;
       }
+    } catch (e) {
+      console.log("LIFF standalone mode:", e);
     }
+  }
 
-    function closeLiffWindow() {
-      if (liff.isInClient()) {
-        liff.closeWindow();
-      } else {
-        alert('Close window is only available inside LINE client.');
-      }
+  function showTab(name) {
+    document.querySelectorAll(".tab-btn").forEach((b, i) => b.classList.toggle("active", (name==='form'&&i===0)||(name==='map'&&i===1)||(name==='stories'&&i===2)));
+    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+    document.getElementById("panel-" + name).classList.add("active");
+    if (name === 'map') initMap();
+    if (name === 'stories') renderStories();
+  }
+
+  function initMap() {
+    if (!mapInstance) {
+      mapInstance = L.map('map-box').setView([37.0, -95.0], 4);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap | Our Times' }).addTo(mapInstance);
     }
+    setTimeout(() => { mapInstance.invalidateSize(); }, 200);
+    markers.forEach(m => mapInstance.removeLayer(m));
+    markers = [];
+    demoPlots.forEach(p => {
+      const m = L.circleMarker([p.lat, p.lon], { radius: 9, fillColor: "#0072B2", color: "#FFF", weight: 2, fillOpacity: 0.9 }).addTo(mapInstance);
+      m.bindPopup(`<strong style="color:#0072B2">${p.place}</strong><br><small style="color:#666;font-weight:600">${p.era}</small><p style="margin-top:0.3rem;font-style:italic">"${p.memory}"</p>`);
+      markers.push(m);
+    });
+  }
 
-    window.onload = initializeLiff;
-  </script>
+  function renderStories() {
+    const list = document.getElementById("stories-list");
+    list.innerHTML = "";
+    demoPlots.forEach(p => {
+      const el = document.createElement("div");
+      el.className = "story-card";
+      el.innerHTML = `<div class="story-meta"><span>📍 ${p.place}</span><span>📅 ${p.date}</span></div><div class="story-place">${p.place}</div><div class="story-era">${p.era}</div><div class="story-text">"${p.memory}"</div>`;
+      list.appendChild(el);
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    startLIFF();
+    renderStories();
+    const form = document.getElementById("plot-form");
+    const msg = document.getElementById("msg");
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const p = document.getElementById("place").value;
+      const er = document.getElementById("era").value;
+      const mem = document.getElementById("memory").value;
+      demoPlots.unshift({ place: p, era: er, memory: mem, lat: 39.0997 + (Math.random()-0.5)*3, lon: -94.5786 + (Math.random()-0.5)*3, date: "Just now" });
+      msg.textContent = "Your Honor Plot has been recorded in living community memory.";
+      msg.className = "success";
+      form.reset();
+      setTimeout(() => { showTab('stories'); }, 1400);
+    });
+  });
+</script>
 </body>
 </html>
