@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Honor Plots — Living Community Memory</title>
+  <title>Honor Plots - Living Community Memory</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -22,333 +22,302 @@
       background-color: var(--bg);
       color: var(--text);
       margin: 0;
-      padding: 16px;
+      padding: 24px 16px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
     .container {
       width: 100%;
-      max-width: 600px;
+      max-width: 800px;
     }
     header {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 32px;
     }
     h1 {
       color: var(--accent);
-      margin-bottom: 4px;
-      font-size: 1.8rem;
+      margin-bottom: 8px;
+      font-size: 2.2rem;
     }
     .subtitle {
       color: var(--text-muted);
-      font-size: 0.95rem;
+      font-size: 1.1rem;
     }
     .card {
-      background: var(--card-bg);
+      background-color: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
-    .form-group {
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-top: 0;
       margin-bottom: 16px;
-    }
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 500;
-      font-size: 0.9rem;
-    }
-    input[type="text"], textarea {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid var(--border);
-      background: #0d0f12;
-      color: var(--text);
-      border-radius: 6px;
-      box-sizing: border-box;
-      font-size: 0.95rem;
-    }
-    textarea {
-      resize: vertical;
-      height: 80px;
-    }
-    .checkbox-group {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 0.85rem;
+    }
+    /* Scarcity Bar */
+    .scarcity-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .progress-bg {
+      background: var(--border);
+      border-radius: 8px;
+      height: 20px;
+      width: 100%;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .progress-fill {
+      background: linear-gradient(90deg, #d97706, #f59e0b);
+      height: 100%;
+      width: 37%;
+      transition: width 0.5s ease;
+    }
+    .scarcity-note {
+      font-size: 0.875rem;
       color: var(--text-muted);
+      text-align: right;
+    }
+    /* Price Anchor & Value Stack */
+    .price-anchor {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--text);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .price-anchor span {
+      color: var(--accent);
+    }
+    .value-stack {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 20px 0;
+    }
+    .value-stack li {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+    }
+    .value-stack li:last-child {
+      border-bottom: none;
+    }
+    .value-item-val {
+      color: var(--text-muted);
+      text-decoration: line-through;
+    }
+    .total-val {
+      font-size: 1.1rem;
+      font-weight: bold;
+      text-align: right;
+      color: var(--accent);
+      margin-top: 8px;
+    }
+    /* WTC 3-Era Card */
+    .era-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .era-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .era-box h4 {
+      margin: 0 0 8px 0;
+      color: var(--accent);
+    }
+    .era-box p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    /* Geocoder & GPS Picker */
+    .input-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 10px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.95rem;
     }
     button {
-      width: 100%;
-      padding: 12px;
+      padding: 10px 18px;
       background: var(--accent);
-      color: white;
+      color: #fff;
       border: none;
       border-radius: 6px;
       font-weight: 600;
-      font-size: 1rem;
       cursor: pointer;
-      transition: background 0.2s;
     }
     button:hover {
       background: var(--accent-hover);
     }
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    #map-box {
+    #map {
       height: 250px;
       width: 100%;
       border-radius: 8px;
-      margin-top: 10px;
       border: 1px solid var(--border);
     }
-    .story-card {
-      border-left: 3px solid var(--accent);
-      background: #11141a;
-      padding: 12px 16px;
-      margin-bottom: 12px;
-      border-radius: 0 8px 8px 0;
-    }
-    .story-meta {
-      font-size: 0.8rem;
-      color: var(--accent);
-      font-weight: 600;
-      margin-bottom: 4px;
-      display: flex;
-      justify-content: space-between;
-    }
-    .story-text {
-      font-size: 0.95rem;
-      line-height: 1.4;
-    }
-    #gps-status {
-      font-size: 0.8rem;
+    .gps-display {
+      margin-top: 10px;
+      font-size: 0.9rem;
       color: var(--text-muted);
-      margin-top: 4px;
     }
-    .msg {
-      padding: 10px;
-      border-radius: 6px;
-      margin-bottom: 16px;
-      display: none;
-    }
-    .msg.success {
-      background: #064e3b;
-      color: #a7f3d0;
-      display: block;
-    }
-    .msg.error {
-      background: #7f1d1d;
-      color: #fecaca;
-      display: block;
+    /* Fiduciary Safe Harbor */
+    .safe-harbor-text {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
     }
   </style>
 </head>
 <body>
-
   <div class="container">
     <header>
-      <h1>Honor Plots</h1>
-      <div class="subtitle">Preserving Living Community Memories on the Map</div>
+      <h1>Honor Plots - Living Community Memory</h1>
+      <div class="subtitle">Hormozi Grand Slam Offer & Multi-Era Tribute Vault</div>
     </header>
 
-    <div id="msg" class="msg"></div>
-
+    <!-- Founding Cohort Scarcity Bar -->
     <div class="card">
-      <h2>Record an Honor Plot</h2>
-      <form id="plot-form">
-        <div class="form-group">
-          <label for="place">Place / Location Name</label>
-          <input type="text" id="place" placeholder="e.g. 12th & Vine, Akasaka, Ebisu" required>
-        </div>
-
-        <div class="form-group">
-          <label for="era">Era / Timeframe</label>
-          <input type="text" id="era" placeholder="e.g. Summer 1974, Late 80s" required>
-        </div>
-
-        <div class="form-group">
-          <label for="memory">Memory / Reflection</label>
-          <textarea id="memory" placeholder="Share why this space matters to the community..." required></textarea>
-        </div>
-
-        <div class="form-group">
-          <label>Location Pin (Tap map or enter coordinates)</label>
-          <div style="display: flex; gap: 8px;">
-            <input type="text" id="geo_lat" placeholder="Latitude (e.g. 35.6467)">
-            <input type="text" id="geo_lon" placeholder="Longitude (e.g. 139.7101)">
-          </div>
-          <div id="gps-status">📍 Tap on the map to set location or type place above for auto-geocoding</div>
-          <div id="map-box"></div>
-        </div>
-
-        <div class="form-group checkbox-group">
-          <input type="checkbox" id="ack" required>
-          <label for="ack">I confirm this memory honors community culture and respects local space.</label>
-        </div>
-
-        <button type="submit" id="sub-btn">Record Honor Plot</button>
-      </form>
+      <div class="card-title">🔥 Founding Cohort Scarcity Bar</div>
+      <div class="scarcity-header">
+        <span>Founding Cohort Slots Claimed</span>
+        <span>37 / 100</span>
+      </div>
+      <div class="progress-bg">
+        <div class="progress-fill"></div>
+      </div>
+      <div class="scarcity-note">Only 63 spots remaining before Founding Patron rate increases forever.</div>
     </div>
 
+    <!-- Patron Price Anchor & Full Value Stack -->
     <div class="card">
-      <h2>Community Memory Stream</h2>
-      <div id="stories-list"></div>
+      <div class="card-title">💎 Grand Slam Patron Offer</div>
+      <div class="price-anchor">
+        Patron Price: <span>$150 / ¥22,000</span>
+      </div>
+      <ul class="value-stack">
+        <li>
+          <span>Lifetime Perpetual Honor Plot Reservation</span>
+          <span class="value-item-val">$1,200 Value</span>
+        </li>
+        <li>
+          <span>High-Precision GPS & Automatic Geocoding Sync</span>
+          <span class="value-item-val">$500 Value</span>
+        </li>
+        <li>
+          <span>WTC Three-Era Archival Tribute Access</span>
+          <span class="value-item-val">$400 Value</span>
+        </li>
+        <li>
+          <span>Fiduciary Safe Harbor Legal Protection</span>
+          <span class="value-item-val">$400 Value</span>
+        </li>
+      </ul>
+      <div class="total-val">Total Value: $2,500+ | You Save 94%</div>
+    </div>
+
+    <!-- WTC Three-Era Comparison Card -->
+    <div class="card">
+      <div class="card-title">🏙️ WTC Multi-Era Comparison</div>
+      <div class="era-grid">
+        <div class="era-box">
+          <h4>Era I: Pre-1993</h4>
+          <p>Original Twin Towers landmark architectural inception and early community memory archives.</p>
+        </div>
+        <div class="era-box">
+          <h4>Era II: 1993–2001</h4>
+          <p>Plaza expansion, global cultural significance, and historic transition period records.</p>
+        </div>
+        <div class="era-box">
+          <h4>Era III: Post-2001 / Present</h4>
+          <p>One World Trade Center, National 9/11 Memorial, and living digital tribute persistence.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Automatic Geocoder & GPS Picker -->
+    <div class="card">
+      <div class="card-title">📍 Automatic Geocoder & GPS Picker</div>
+      <div class="input-group">
+        <input type="text" id="addressInput" placeholder="Enter landmark or location (e.g., World Trade Center)" value="World Trade Center, NYC">
+        <button onclick="geocodeAddress()">Geocode & Pick</button>
+      </div>
+      <div id="map"></div>
+      <div class="gps-display" id="gpsDisplay">Selected Coordinates: 40.712742, -74.013382</div>
+    </div>
+
+    <!-- Fiduciary Safe Harbor -->
+    <div class="card">
+      <div class="card-title">🛡️ Fiduciary Safe Harbor</div>
+      <div class="safe-harbor-text">
+        All patron contributions are protected under strict fiduciary safe harbor provisions. Funds are held in escrow/perpetual trust exclusively for server upkeep, memorial data preservation, and decentralized archive persistence. No personal distributions or speculatory uses permitted.
+      </div>
     </div>
   </div>
 
   <script>
-    const LIFF_ID = "2000000000-xxxxxxx";
-    let liffUserId = "ANONYMOUS";
-    let mapInstance = null;
+    let map = L.map('map').setView([40.712742, -74.013382], 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap'
+    }).addTo(map);
 
-    const demoPlots = [
-      { place: "12th & Vine", era: "Summer 1974", memory: "Grandmother's porch on Sunday afternoons. Gospel music playing.", lat: 39.0997, lon: -94.5786 },
-      { place: "Akasaka Cultural Corner", era: "Autumn 1982", memory: "Late evening soul and jazz listening sessions.", lat: 35.6722, lon: 139.7364 },
-      { place: "Brown Sugar Ebisu", era: "Winter 1995", memory: "Soul music & vinyl sanctuary in Ebisu, Tokyo.", lat: 35.6467, lon: 139.7101 }
-    ];
+    let marker = L.marker([40.712742, -74.013382], {draggable: true}).addTo(map);
 
-    function geocodePlace(placeName) {
-      const p = (placeName || "").toLowerCase();
-      if (p.includes("ebisu") || p.includes("tokyo") || p.includes("brown sugar")) {
-        return { lat: 35.6467, lon: 139.7101 };
-      }
-      if (p.includes("akasaka")) {
-        return { lat: 35.6722, lon: 139.7364 };
-      }
-      if (p.includes("12th") || p.includes("vine")) {
-        return { lat: 39.0997, lon: -94.5786 };
-      }
-      return null;
+    function updateCoords(lat, lng) {
+      document.getElementById('gpsDisplay').innerText = `Selected Coordinates: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
     }
 
-    async function startLIFF() {
-      try {
-        if (window.liff) {
-          await liff.init({ liffId: LIFF_ID });
-          if (liff.isLoggedIn()) {
-            const profile = await liff.getProfile();
-            liffUserId = profile.userId;
-          }
-        }
-      } catch (err) {
-        console.warn("LIFF initialization skipped or running outside LINE app:", err);
-      }
-    }
-
-    function initMap() {
-      if (!mapInstance) {
-        mapInstance = L.map('map-box').setView([35.6467, 139.7101], 3);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 19,
-          attribution: '&copy; OpenStreetMap'
-        }).addTo(mapInstance);
-
-        mapInstance.on('click', function(e) {
-          const lat = e.latlng.lat.toFixed(5);
-          const lon = e.latlng.lng.toFixed(5);
-          const latEl = document.getElementById("geo_lat");
-          const lonEl = document.getElementById("geo_lon");
-          if (latEl) latEl.value = lat;
-          if (lonEl) lonEl.value = lon;
-          const status = document.getElementById("gps-status");
-          if (status) status.textContent = `📍 Map Tapped: ${lat}, ${lon}`;
-        });
-      }
-
-      demoPlots.forEach(p => {
-        if (p.lat && p.lon) {
-          L.marker([p.lat, p.lon]).addTo(mapInstance)
-            .bindPopup(`<b>${p.place}</b><br>${p.era}<br>${p.memory}`);
-        }
-      });
-    }
-
-    function renderStories() {
-      const list = document.getElementById("stories-list");
-      list.innerHTML = "";
-      demoPlots.forEach(p => {
-        const el = document.createElement("div");
-        el.className = "story-card";
-        el.innerHTML = `<div class="story-meta"><span>📍 ${p.place}</span><span>🗓 ${p.era}</span></div><div class="story-text">${p.memory}</div>`;
-        list.appendChild(el);
-      });
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      startLIFF();
-      renderStories();
-      initMap();
-
-      const placeInput = document.getElementById("place");
-      if (placeInput) {
-        placeInput.addEventListener("input", (e) => {
-          const coords = geocodePlace(e.target.value);
-          if (coords) {
-            document.getElementById("geo_lat").value = coords.lat;
-            document.getElementById("geo_lon").value = coords.lon;
-            const status = document.getElementById("gps-status");
-            if (status) status.textContent = `📍 Geocoded: ${coords.lat}, ${coords.lon}`;
-          }
-        });
-      }
-
-      const form = document.getElementById("plot-form");
-      const msg = document.getElementById("msg");
-      const subBtn = document.getElementById("sub-btn");
-
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        subBtn.disabled = true;
-        subBtn.textContent = "Recording...";
-
-        const p = document.getElementById("place").value;
-        const er = document.getElementById("era").value;
-        const mem = document.getElementById("memory").value;
-        
-        let lat = document.getElementById("geo_lat").value;
-        let lon = document.getElementById("geo_lon").value;
-
-        if (!lat || !lon) {
-          const coords = geocodePlace(p);
-          if (coords) {
-            lat = coords.lat;
-            lon = coords.lon;
-          } else {
-            lat = (39.0997 + (Math.random()-0.5)*3).toFixed(5);
-            lon = (-94.5786 + (Math.random()-0.5)*3).toFixed(5);
-          }
-        }
-
-        const payload = {
-          user_id: liffUserId,
-          place_name: p,
-          era_marker: er,
-          memory_reflection: mem,
-          latitude: lat,
-          longitude: lon,
-          safe_harbor_acknowledged: document.getElementById("ack").checked
-        };
-
-        demoPlots.unshift({ place: p, era: er, memory: mem, lat: parseFloat(lat), lon: parseFloat(lon) });
-        renderStories();
-        if (mapInstance) {
-          L.marker([parseFloat(lat), parseFloat(lon)]).addTo(mapInstance)
-            .bindPopup(`<b>${p}</b><br>${er}<br>${mem}`).openPopup();
-        }
-
-        msg.textContent = "Your Honor Plot has been recorded in living community memory and saved to the registry.";
-        msg.className = "msg success";
-        form.reset();
-        subBtn.disabled = false;
-        subBtn.textContent = "Record Honor Plot";
-      });
+    marker.on('dragend', function (e) {
+      let coord = marker.getLatLng();
+      updateCoords(coord.lat, coord.lng);
     });
+
+    map.on('click', function(e) {
+      marker.setLatLng(e.latlng);
+      updateCoords(e.lat, e.lng);
+    });
+
+    function geocodeAddress() {
+      let query = document.getElementById('addressInput').value;
+      if (!query) return;
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.length > 0) {
+            let lat = parseFloat(data[0].lat);
+            let lon = parseFloat(data[0].lon);
+            map.setView([lat, lon], 15);
+            marker.setLatLng([lat, lon]);
+            updateCoords(lat, lon);
+          }
+        })
+        .catch(err => console.error(err));
+    }
   </script>
 </body>
 </html>
