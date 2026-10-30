@@ -3,320 +3,266 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Honor Plots - Living Community Memory</title>
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <title>Honor Plots - Multi-Era Global Discovery Map</title>
   <style>
     :root {
-      --bg: #0d0f12;
-      --card-bg: #161a22;
-      --accent: #d97706;
-      --accent-hover: #b45309;
-      --text: #f3f4f6;
-      --text-muted: #9ca3af;
-      --border: #2d3748;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --accent: #38bdf8;
+      --accent-green: #22c55e;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
     }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg);
       color: var(--text);
-      margin: 0;
-      padding: 24px 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      padding: 20px;
     }
     .container {
-      width: 100%;
-      max-width: 800px;
-    }
-    header {
-      text-align: center;
-      margin-bottom: 32px;
+      max-width: 900px;
+      margin: 0 auto;
     }
     h1 {
-      color: var(--accent);
+      font-size: 1.8rem;
       margin-bottom: 8px;
-      font-size: 2.2rem;
     }
     .subtitle {
       color: var(--text-muted);
-      font-size: 1.1rem;
+      margin-bottom: 24px;
     }
     .card {
       background-color: var(--card-bg);
-      border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
-    .card-title {
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: var(--accent);
-      margin-top: 0;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    /* Scarcity Bar */
-    .scarcity-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-    .progress-bg {
-      background: var(--border);
-      border-radius: 8px;
-      height: 20px;
-      width: 100%;
-      overflow: hidden;
-      margin-bottom: 8px;
-    }
-    .progress-fill {
-      background: linear-gradient(90deg, #d97706, #f59e0b);
-      height: 100%;
-      width: 37%;
-      transition: width 0.5s ease;
-    }
-    .scarcity-note {
-      font-size: 0.875rem;
-      color: var(--text-muted);
-      text-align: right;
-    }
-    /* Price Anchor & Value Stack */
-    .price-anchor {
-      font-size: 2rem;
-      font-weight: bold;
-      color: var(--text);
-      margin-bottom: 16px;
-      text-align: center;
-    }
-    .price-anchor span {
-      color: var(--accent);
-    }
-    .value-stack {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 20px 0;
-    }
-    .value-stack li {
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-    }
-    .value-stack li:last-child {
-      border-bottom: none;
-    }
-    .value-item-val {
-      color: var(--text-muted);
-      text-decoration: line-through;
-    }
-    .total-val {
-      font-size: 1.1rem;
-      font-weight: bold;
-      text-align: right;
-      color: var(--accent);
-      margin-top: 8px;
-    }
-    /* WTC 3-Era Card */
-    .era-grid {
+    .hubs-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 16px;
+      margin-top: 16px;
     }
-    .era-box {
-      background: var(--bg);
-      border: 1px solid var(--border);
+    .hub-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 8px;
       padding: 16px;
     }
-    .era-box h4 {
-      margin: 0 0 8px 0;
+    .hub-title {
+      font-weight: 600;
       color: var(--accent);
+      margin-bottom: 6px;
     }
-    .era-box p {
-      margin: 0;
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      line-height: 1.4;
-    }
-    /* Geocoder & GPS Picker */
-    .input-group {
+    .era-pills {
       display: flex;
-      gap: 8px;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 16px 0;
+    }
+    .era-pill {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+    .era-pill.active {
+      background: var(--accent);
+      color: #0f172a;
+      font-weight: 600;
+      border-color: var(--accent);
+    }
+    .layer-desc {
+      background: rgba(0, 0, 0, 0.25);
+      border-left: 4px solid var(--accent);
+      padding: 14px;
+      border-radius: 4px;
+      margin-top: 12px;
+    }
+    .btn-action {
+      background: var(--accent);
+      color: #0f172a;
+      font-weight: 600;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 1rem;
+      margin-top: 16px;
+      transition: opacity 0.2s;
+    }
+    .btn-action:hover {
+      opacity: 0.9;
+    }
+    .drawer-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 998;
+    }
+    .drawer-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .slide-up-drawer {
+      position: fixed;
+      bottom: -100%;
+      left: 0;
+      right: 0;
+      max-width: 600px;
+      margin: 0 auto;
+      background: #1e293b;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+      transition: bottom 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 999;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .slide-up-drawer.open {
+      bottom: 0;
+    }
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 16px;
     }
-    input[type="text"] {
-      flex: 1;
-      padding: 10px 14px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text);
-      font-size: 0.95rem;
-    }
-    button {
-      padding: 10px 18px;
-      background: var(--accent);
-      color: #fff;
+    .close-btn {
+      background: none;
       border: none;
-      border-radius: 6px;
-      font-weight: 600;
+      color: var(--text-muted);
+      font-size: 1.5rem;
       cursor: pointer;
     }
-    button:hover {
-      background: var(--accent-hover);
-    }
-    #map {
-      height: 250px;
+    .claim-btn {
+      background: var(--accent-green);
+      color: #ffffff;
+      font-weight: bold;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 1.05rem;
       width: 100%;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+    .claim-status-badge {
+      display: none;
+      margin-top: 12px;
+      padding: 10px;
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid var(--accent-green);
+      color: #4ade80;
       border-radius: 8px;
-      border: 1px solid var(--border);
-    }
-    .gps-display {
-      margin-top: 10px;
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-    /* Fiduciary Safe Harbor */
-    .safe-harbor-text {
-      font-size: 0.9rem;
-      line-height: 1.6;
-      color: var(--text-muted);
+      text-align: center;
+      font-weight: 600;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <header>
-      <h1>Honor Plots - Living Community Memory</h1>
-      <div class="subtitle">Hormozi Grand Slam Offer & Multi-Era Tribute Vault</div>
-    </header>
+    <h1>Honor Plots — Multi-Era Global Discovery</h1>
+    <p class="subtitle">Global discovered hubs across both shores, historical layer exploration, and one-tap era claiming.</p>
 
-    <!-- Founding Cohort Scarcity Bar -->
     <div class="card">
-      <div class="card-title">🔥 Founding Cohort Scarcity Bar</div>
-      <div class="scarcity-header">
-        <span>Founding Cohort Slots Claimed</span>
-        <span>37 / 100</span>
-      </div>
-      <div class="progress-bg">
-        <div class="progress-fill"></div>
-      </div>
-      <div class="scarcity-note">Only 63 spots remaining before Founding Patron rate increases forever.</div>
-    </div>
-
-    <!-- Patron Price Anchor & Full Value Stack -->
-    <div class="card">
-      <div class="card-title">💎 Grand Slam Patron Offer</div>
-      <div class="price-anchor">
-        Patron Price: <span>$150 / ¥22,000</span>
-      </div>
-      <ul class="value-stack">
-        <li>
-          <span>Lifetime Perpetual Honor Plot Reservation</span>
-          <span class="value-item-val">$1,200 Value</span>
-        </li>
-        <li>
-          <span>High-Precision GPS & Automatic Geocoding Sync</span>
-          <span class="value-item-val">$500 Value</span>
-        </li>
-        <li>
-          <span>WTC Three-Era Archival Tribute Access</span>
-          <span class="value-item-val">$400 Value</span>
-        </li>
-        <li>
-          <span>Fiduciary Safe Harbor Legal Protection</span>
-          <span class="value-item-val">$400 Value</span>
-        </li>
-      </ul>
-      <div class="total-val">Total Value: $2,500+ | You Save 94%</div>
-    </div>
-
-    <!-- WTC Three-Era Comparison Card -->
-    <div class="card">
-      <div class="card-title">🏙️ WTC Multi-Era Comparison</div>
-      <div class="era-grid">
-        <div class="era-box">
-          <h4>Era I: Pre-1993</h4>
-          <p>Original Twin Towers landmark architectural inception and early community memory archives.</p>
+      <h2>🌍 Global Discovered Hubs</h2>
+      <div class="hubs-grid">
+        <div class="hub-card">
+          <div class="hub-title">⚓ East Shore Hub</div>
+          <div>Location: Atlantic Maritime Basin</div>
+          <div>Discovered Status: Verified Active</div>
+          <div>Coordinates: 40.7128° N, 74.0060° W</div>
         </div>
-        <div class="era-box">
-          <h4>Era II: 1993–2001</h4>
-          <p>Plaza expansion, global cultural significance, and historic transition period records.</p>
-        </div>
-        <div class="era-box">
-          <h4>Era III: Post-2001 / Present</h4>
-          <p>One World Trade Center, National 9/11 Memorial, and living digital tribute persistence.</p>
+        <div class="hub-card">
+          <div class="hub-title">🌊 West Shore Hub</div>
+          <div>Location: Pacific Honor Gateway</div>
+          <div>Discovered Status: Verified Active</div>
+          <div>Coordinates: 37.7749° N, 122.4194° W</div>
         </div>
       </div>
     </div>
 
-    <!-- Automatic Geocoder & GPS Picker -->
     <div class="card">
-      <div class="card-title">📍 Automatic Geocoder & GPS Picker</div>
-      <div class="input-group">
-        <input type="text" id="addressInput" placeholder="Enter landmark or location (e.g., World Trade Center)" value="World Trade Center, NYC">
-        <button onclick="geocodeAddress()">Geocode & Pick</button>
+      <h2>⏳ Historical Layer Explorer</h2>
+      <div class="era-pills">
+        <button class="era-pill active" onclick="selectEra('Ancient')">Ancient Era</button>
+        <button class="era-pill" onclick="selectEra('Colonial')">Colonial Era</button>
+        <button class="era-pill" onclick="selectEra('Industrial')">Industrial Era</button>
+        <button class="era-pill" onclick="selectEra('Modern')">Modern Era</button>
+        <button class="era-pill" onclick="selectEra('Future')">Future Era</button>
       </div>
-      <div id="map"></div>
-      <div class="gps-display" id="gpsDisplay">Selected Coordinates: 40.712742, -74.013382</div>
-    </div>
 
-    <!-- Fiduciary Safe Harbor -->
-    <div class="card">
-      <div class="card-title">🛡️ Fiduciary Safe Harbor</div>
-      <div class="safe-harbor-text">
-        All patron contributions are protected under strict fiduciary safe harbor provisions. Funds are held in escrow/perpetual trust exclusively for server upkeep, memorial data preservation, and decentralized archive persistence. No personal distributions or speculatory uses permitted.
+      <div class="layer-desc">
+        <strong id="era-title-display">Ancient Era Historical Layer:</strong>
+        <p id="era-desc-display" style="margin: 6px 0 0 0;">Early indigenous trading shoreline routes and natural harbor encampments established across both eastern and western coastal shores.</p>
       </div>
+
+      <button class="btn-action" onclick="openDrawer()">Open Slide-Up Multi-Era Drawer</button>
     </div>
   </div>
 
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+  <div class="slide-up-drawer" id="eraDrawer">
+    <div class="drawer-header">
+      <h3 id="drawerTitle" style="margin:0;">📜 Multi-Era Drawer (<span id="selectedEraLabel">Ancient Era</span>)</h3>
+      <button class="close-btn" onclick="closeDrawer()">&times;</button>
+    </div>
+    <p id="drawerBody">Exploring discovered hubs across both shores. Historical layer details synchronized for direct era claiming.</p>
+    
+    <button class="claim-btn" id="claimBtn" onclick="claimCurrentEra()">⚡ One-Tap Claim Era</button>
+    <div class="claim-status-badge" id="claimBadge">✓ Era Claimed Successfully! Discovered Hub Synchronized.</div>
+  </div>
+
   <script>
-    let map = L.map('map').setView([40.712742, -74.013382], 15);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap'
-    }).addTo(map);
+    const eraData = {
+      'Ancient': 'Early indigenous trading shoreline routes and natural harbor encampments established across both eastern and western coastal shores.',
+      'Colonial': 'Maritime cartography, lighthouse beacons, and transatlantic trading networks bridging east and west shores.',
+      'Industrial': 'Steam-powered ports, railway junctions, and heavy harbor infrastructure linking both coastal hubs.',
+      'Modern': 'Global telecommunication landing stations, deep-water automated container terminals, and urban honor plots.',
+      'Future': 'Quantum-linked shore hubs, floating ecological platforms, and autonomous multi-era discovery grids.'
+    };
 
-    let marker = L.marker([40.712742, -74.013382], {draggable: true}).addTo(map);
+    let currentEra = 'Ancient';
 
-    function updateCoords(lat, lng) {
-      document.getElementById('gpsDisplay').innerText = `Selected Coordinates: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    function selectEra(era) {
+      currentEra = era;
+      document.querySelectorAll('.era-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.innerText.includes(era));
+      });
+      document.getElementById('era-title-display').innerText = era + ' Era Historical Layer:';
+      document.getElementById('era-desc-display').innerText = eraData[era] || '';
+      document.getElementById('selectedEraLabel').innerText = era + ' Era';
     }
 
-    marker.on('dragend', function (e) {
-      let coord = marker.getLatLng();
-      updateCoords(coord.lat, coord.lng);
-    });
+    function openDrawer() {
+      document.getElementById('drawerOverlay').classList.add('active');
+      document.getElementById('eraDrawer').classList.add('open');
+    }
 
-    map.on('click', function(e) {
-      marker.setLatLng(e.latlng);
-      updateCoords(e.lat, e.lng);
-    });
+    function closeDrawer() {
+      document.getElementById('drawerOverlay').classList.remove('active');
+      document.getElementById('eraDrawer').classList.remove('open');
+    }
 
-    function geocodeAddress() {
-      let query = document.getElementById('addressInput').value;
-      if (!query) return;
-      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.length > 0) {
-            let lat = parseFloat(data[0].lat);
-            let lon = parseFloat(data[0].lon);
-            map.setView([lat, lon], 15);
-            marker.setLatLng([lat, lon]);
-            updateCoords(lat, lon);
-          }
-        })
-        .catch(err => console.error(err));
+    function claimCurrentEra() {
+      const badge = document.getElementById('claimBadge');
+      const btn = document.getElementById('claimBtn');
+      badge.style.display = 'block';
+      badge.innerText = `✓ ${currentEra} Era Claimed Successfully! Hub Synchronized.`;
+      btn.innerText = '✓ Era Claimed';
+      btn.style.background = '#15803d';
     }
   </script>
 </body>
