@@ -1,235 +1,354 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Honor Plots — Our Times</title>
-  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Honor Plots — Living Community Memory</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
-    :root { --primary: #0072B2; --secondary: #009E73; --bg: #FDFBF7; --surface: #FFF; --text: #1F2937; --muted: #4B5563; --border: #E5E7EB; }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; padding-bottom: 2rem; }
-    nav.tabs { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000; }
-    .tab-btn { flex: 1; padding: 0.85rem; border: none; background: none; font-size: 0.9rem; font-weight: 600; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; min-height: 48px; }
-    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: #F8FAFC; }
-    .container { max-width: 600px; margin: 1rem auto; padding: 0 1rem; }
-    .panel { display: none; }
-    .panel.active { display: block; }
-    .card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    h1 { font-size: 1.35rem; color: var(--primary); margin-bottom: 0.25rem; }
-    p.sub { font-size: 0.875rem; color: var(--muted); margin-bottom: 1.25rem; }
-    .group { margin-bottom: 1rem; }
-    label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.25rem; }
-    input[type="text"], textarea { width: 100%; padding: 0.65rem 0.75rem; font-size: 0.95rem; border: 1px solid var(--border); border-radius: 6px; background: #FAFAFA; color: var(--text); }
-    input[type="text"]:focus, textarea:focus { outline: none; border-color: var(--primary); background: #FFF; }
-    textarea { min-height: 100px; resize: vertical; }
-    .helper { font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem; }
-    .notice { background: #F9FAFB; border-left: 3px solid var(--primary); padding: 0.75rem; margin: 1.25rem 0 1rem; font-size: 0.8rem; color: var(--muted); }
-    .check-group { display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 1.25rem; font-size: 0.85rem; }
-    .check-group input { margin-top: 0.2rem; min-width: 18px; min-height: 18px; }
-    .btn { width: 100%; background: var(--primary); color: #FFF; border: none; border-radius: 6px; padding: 0.85rem; font-size: 1rem; font-weight: 600; cursor: pointer; min-height: 48px; }
-    .btn:hover { background: #005a8e; }
-    .btn:disabled { background: #9CA3AF; cursor: not-allowed; }
-    #msg { margin-top: 1rem; padding: 0.75rem; border-radius: 6px; font-size: 0.875rem; display: none; }
-    .success { background: #E6F4EA; color: #137333; display: block !important; }
-    #map-box { height: 420px; border-radius: 12px; border: 1px solid var(--border); z-index: 1; }
-    .story-card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); padding: 1.25rem; margin-bottom: 1rem; }
-    .story-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); margin-bottom: 0.5rem; border-bottom: 1px dashed var(--border); padding-bottom: 0.35rem; }
-    .story-place { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
-    .story-era { display: inline-block; background: #EBF8FF; color: #0072B2; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; margin: 0.25rem 0 0.5rem; }
-    .story-text { font-size: 0.95rem; color: #374151; font-style: italic; }
+    :root {
+      --bg: #0d0f12;
+      --card-bg: #161a22;
+      --accent: #d97706;
+      --accent-hover: #b45309;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --border: #2d3748;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 600px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    h1 {
+      color: var(--accent);
+      margin-bottom: 4px;
+      font-size: 1.8rem;
+    }
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      background: #0d0f12;
+      color: var(--text);
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 0.95rem;
+    }
+    textarea {
+      resize: vertical;
+      height: 80px;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: var(--accent-hover);
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    #map-box {
+      height: 250px;
+      width: 100%;
+      border-radius: 8px;
+      margin-top: 10px;
+      border: 1px solid var(--border);
+    }
+    .story-card {
+      border-left: 3px solid var(--accent);
+      background: #11141a;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      border-radius: 0 8px 8px 0;
+    }
+    .story-meta {
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .story-text {
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+    #gps-status {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .msg {
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .msg.success {
+      background: #064e3b;
+      color: #a7f3d0;
+      display: block;
+    }
+    .msg.error {
+      background: #7f1d1d;
+      color: #fecaca;
+      display: block;
+    }
   </style>
 </head>
 <body>
-<nav class="tabs">
-  <button class="tab-btn active" onclick="showTab('form')">✍️ Mark Plot</button>
-  <button class="tab-btn" onclick="showTab('map')">🗺️ Map</button>
-  <button class="tab-btn" onclick="showTab('stories')">📖 Stories</button>
-</nav>
 
-<div class="container">
-  <div id="panel-form" class="panel active">
+  <div class="container">
+    <header>
+      <h1>Honor Plots</h1>
+      <div class="subtitle">Preserving Living Community Memories on the Map</div>
+    </header>
+
+    <div id="msg" class="msg"></div>
+
     <div class="card">
-      <h1>Mark an Honor Plot</h1>
-      <p class="sub">Honor a human-scale place and time in living community memory.</p>
+      <h2>Record an Honor Plot</h2>
       <form id="plot-form">
-        <div class="group">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <label for="place" style="margin-bottom:0;">Place or Landmark</label>
-            <button type="button" onclick="getGPSLocation()" style="background:none; border:1px solid var(--primary); color:var(--primary); font-size:0.75rem; font-weight:600; padding:0.2rem 0.5rem; border-radius:4px; cursor:pointer;">📍 Use Current GPS</button>
+        <div class="form-group">
+          <label for="place">Place / Location Name</label>
+          <input type="text" id="place" placeholder="e.g. 12th & Vine, Akasaka, Ebisu" required>
+        </div>
+
+        <div class="form-group">
+          <label for="era">Era / Timeframe</label>
+          <input type="text" id="era" placeholder="e.g. Summer 1974, Late 80s" required>
+        </div>
+
+        <div class="form-group">
+          <label for="memory">Memory / Reflection</label>
+          <textarea id="memory" placeholder="Share why this space matters to the community..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Location Pin (Tap map or enter coordinates)</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="geo_lat" placeholder="Latitude (e.g. 35.6467)">
+            <input type="text" id="geo_lon" placeholder="Longitude (e.g. 139.7101)">
           </div>
-          <input type="text" id="place" required placeholder="e.g., 12th & Vine, Old Church Porch" style="margin-top:0.35rem;">
-          <input type="hidden" id="geo_lat" value="">
-          <input type="hidden" id="geo_lon" value="">
-          <div class="helper" id="gps-status">A specific corner, building, porch, or landmark.</div>
+          <div id="gps-status">📍 Tap on the map to set location or type place above for auto-geocoding</div>
+          <div id="map-box"></div>
         </div>
-        <div class="group">
-          <label for="era">Era or Time</label>
-          <input type="text" id="era" required placeholder="e.g., Summer 1974, My childhood years">
-          <div class="helper">A year, season, or era—exact calendar dates are not required.</div>
-        </div>
-        <div class="group">
-          <label for="memory">Story or Memory</label>
-          <textarea id="memory" required placeholder="What do you remember about this place in that era? Who was there?"></textarea>
-          <div class="helper">In your own words. Small, everyday memories are welcomed.</div>
-        </div>
-        <div class="notice">
-          <strong>Symbolic Tribute Notice:</strong> An Honor Plot is a symbolic cultural tribute marking a human-scale place and time. It represents personal and community memory; it does not constitute legal title, property ownership, or a financial instrument. Subject to the participant's independent tax and legal counsel.
-        </div>
-        <div class="check-group">
+
+        <div class="form-group checkbox-group">
           <input type="checkbox" id="ack" required>
-          <label for="ack">I understand this is a symbolic personal memory mark.</label>
+          <label for="ack">I confirm this memory honors community culture and respects local space.</label>
         </div>
-        <button type="submit" class="btn" id="sub-btn">Record Honor Plot</button>
+
+        <button type="submit" id="sub-btn">Record Honor Plot</button>
       </form>
-      <div id="msg"></div>
+    </div>
+
+    <div class="card">
+      <h2>Community Memory Stream</h2>
+      <div id="stories-list"></div>
     </div>
   </div>
 
-  <div id="panel-map" class="panel">
-    <div id="map-box"></div>
-    <p class="helper" style="margin-top:0.5rem; text-align:center;">Tap any blue marker to view the community memory recorded at that location.</p>
-  </div>
+  <script>
+    const LIFF_ID = "2000000000-xxxxxxx";
+    let liffUserId = "ANONYMOUS";
+    let mapInstance = null;
 
-  <div id="panel-stories" class="panel">
-    <div id="stories-list"></div>
-  </div>
-</div>
+    const demoPlots = [
+      { place: "12th & Vine", era: "Summer 1974", memory: "Grandmother's porch on Sunday afternoons. Gospel music playing.", lat: 39.0997, lon: -94.5786 },
+      { place: "Akasaka Cultural Corner", era: "Autumn 1982", memory: "Late evening soul and jazz listening sessions.", lat: 35.6722, lon: 139.7364 },
+      { place: "Brown Sugar Ebisu", era: "Winter 1995", memory: "Soul music & vinyl sanctuary in Ebisu, Tokyo.", lat: 35.6467, lon: 139.7101 }
+    ];
 
-<script>
-  let liffUserId = "anonymous";
-  const LIFF_ID = "2012292060-Vfqk8diJ";
-  const GOOGLE_SHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyBDmGnjgcH5Zh_S88p_s_z_Vr2Qwa1Ex463GkA3cxj-wVeFdpMRa6KzPggmU2SVxPfhg/exec";
-
-  const demoPlots = [
-    { place: "12th & Vine", era: "Summer 1974", memory: "Grandmother's porch on Sunday afternoons. Gospel records drifting from across the street, and sweet watermelon slices on ice.", lat: 39.0997, lon: -94.5786, date: "Community Archive" },
-    { place: "Akasaka Cultural Corner", era: "Autumn 1982", memory: "Late evening soul and jazz listening sessions in a quiet basement record salon, bridging American roots and Tokyo artists.", lat: 35.6724, lon: 139.7348, date: "Community Archive" }
-  ];
-
-  let mapInstance = null;
-  let markers = [];
-
-  async function startLIFF() {
-    try {
-      await liff.init({ liffId: LIFF_ID });
-      if (liff.isLoggedIn()) {
-        const p = await liff.getProfile();
-        liffUserId = p.userId;
+    function geocodePlace(placeName) {
+      const p = (placeName || "").toLowerCase();
+      if (p.includes("ebisu") || p.includes("tokyo") || p.includes("brown sugar")) {
+        return { lat: 35.6467, lon: 139.7101 };
       }
-    } catch (e) {
-      console.log("LIFF standalone mode:", e);
-    }
-  }
-
-  function getGPSLocation() {
-    const status = document.getElementById("gps-status");
-    if (!navigator.geolocation) {
-      status.textContent = "GPS not supported on this device.";
-      return;
-    }
-    status.textContent = "Locating your position...";
-    navigator.geolocation.getCurrentPosition((pos) => {
-      const lat = pos.coords.latitude.toFixed(5);
-      const lon = pos.coords.longitude.toFixed(5);
-      document.getElementById("geo_lat").value = lat;
-      document.getElementById("geo_lon").value = lon;
-      status.textContent = "📍 GPS Captured: " + lat + ", " + lon;
-      if (!document.getElementById("place").value) {
-        document.getElementById("place").value = "Location (" + lat + ", " + lon + ")";
+      if (p.includes("akasaka")) {
+        return { lat: 35.6722, lon: 139.7364 };
       }
-    }, (err) => {
-      status.textContent = "Unable to fetch GPS: " + err.message;
-    });
-  }
+      if (p.includes("12th") || p.includes("vine")) {
+        return { lat: 39.0997, lon: -94.5786 };
+      }
+      return null;
+    }
 
-  async function postToSheet(payload) {
-    try {
-      await fetch(GOOGLE_SHEET_WEBHOOK_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+    async function startLIFF() {
+      try {
+        if (window.liff) {
+          await liff.init({ liffId: LIFF_ID });
+          if (liff.isLoggedIn()) {
+            const profile = await liff.getProfile();
+            liffUserId = profile.userId;
+          }
+        }
+      } catch (err) {
+        console.warn("LIFF initialization skipped or running outside LINE app:", err);
+      }
+    }
+
+    function initMap() {
+      if (!mapInstance) {
+        mapInstance = L.map('map-box').setView([35.6467, 139.7101], 3);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; OpenStreetMap'
+        }).addTo(mapInstance);
+
+        mapInstance.on('click', function(e) {
+          const lat = e.latlng.lat.toFixed(5);
+          const lon = e.latlng.lng.toFixed(5);
+          const latEl = document.getElementById("geo_lat");
+          const lonEl = document.getElementById("geo_lon");
+          if (latEl) latEl.value = lat;
+          if (lonEl) lonEl.value = lon;
+          const status = document.getElementById("gps-status");
+          if (status) status.textContent = `📍 Map Tapped: ${lat}, ${lon}`;
+        });
+      }
+
+      demoPlots.forEach(p => {
+        if (p.lat && p.lon) {
+          L.marker([p.lat, p.lon]).addTo(mapInstance)
+            .bindPopup(`<b>${p.place}</b><br>${p.era}<br>${p.memory}`);
+        }
       });
-    } catch (err) {
-      console.warn("Sheet post note:", err);
     }
-  }
 
-  function showTab(name) {
-    document.querySelectorAll(".tab-btn").forEach((b, i) => b.classList.toggle("active", (name==='form'&&i===0)||(name==='map'&&i===1)||(name==='stories'&&i===2)));
-    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
-    document.getElementById("panel-" + name).classList.add("active");
-    if (name === 'map') initMap();
-    if (name === 'stories') renderStories();
-  }
-
-  function initMap() {
-    if (!mapInstance) {
-      mapInstance = L.map('map-box').setView([37.0, -95.0], 4);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap | Our Times' }).addTo(mapInstance);
+    function renderStories() {
+      const list = document.getElementById("stories-list");
+      list.innerHTML = "";
+      demoPlots.forEach(p => {
+        const el = document.createElement("div");
+        el.className = "story-card";
+        el.innerHTML = `<div class="story-meta"><span>📍 ${p.place}</span><span>🗓 ${p.era}</span></div><div class="story-text">${p.memory}</div>`;
+        list.appendChild(el);
+      });
     }
-    setTimeout(() => { mapInstance.invalidateSize(); }, 200);
-    markers.forEach(m => mapInstance.removeLayer(m));
-    markers = [];
-    demoPlots.forEach(p => {
-      const m = L.circleMarker([p.lat, p.lon], { radius: 9, fillColor: "#0072B2", color: "#FFF", weight: 2, fillOpacity: 0.9 }).addTo(mapInstance);
-      m.bindPopup(`<strong style="color:#0072B2">${p.place}</strong><br><small style="color:#666;font-weight:600">${p.era}</small><p style="margin-top:0.3rem;font-style:italic">"${p.memory}"</p>`);
-      markers.push(m);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      startLIFF();
+      renderStories();
+      initMap();
+
+      const placeInput = document.getElementById("place");
+      if (placeInput) {
+        placeInput.addEventListener("input", (e) => {
+          const coords = geocodePlace(e.target.value);
+          if (coords) {
+            document.getElementById("geo_lat").value = coords.lat;
+            document.getElementById("geo_lon").value = coords.lon;
+            const status = document.getElementById("gps-status");
+            if (status) status.textContent = `📍 Geocoded: ${coords.lat}, ${coords.lon}`;
+          }
+        });
+      }
+
+      const form = document.getElementById("plot-form");
+      const msg = document.getElementById("msg");
+      const subBtn = document.getElementById("sub-btn");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        subBtn.disabled = true;
+        subBtn.textContent = "Recording...";
+
+        const p = document.getElementById("place").value;
+        const er = document.getElementById("era").value;
+        const mem = document.getElementById("memory").value;
+        
+        let lat = document.getElementById("geo_lat").value;
+        let lon = document.getElementById("geo_lon").value;
+
+        if (!lat || !lon) {
+          const coords = geocodePlace(p);
+          if (coords) {
+            lat = coords.lat;
+            lon = coords.lon;
+          } else {
+            lat = (39.0997 + (Math.random()-0.5)*3).toFixed(5);
+            lon = (-94.5786 + (Math.random()-0.5)*3).toFixed(5);
+          }
+        }
+
+        const payload = {
+          user_id: liffUserId,
+          place_name: p,
+          era_marker: er,
+          memory_reflection: mem,
+          latitude: lat,
+          longitude: lon,
+          safe_harbor_acknowledged: document.getElementById("ack").checked
+        };
+
+        demoPlots.unshift({ place: p, era: er, memory: mem, lat: parseFloat(lat), lon: parseFloat(lon) });
+        renderStories();
+        if (mapInstance) {
+          L.marker([parseFloat(lat), parseFloat(lon)]).addTo(mapInstance)
+            .bindPopup(`<b>${p}</b><br>${er}<br>${mem}`).openPopup();
+        }
+
+        msg.textContent = "Your Honor Plot has been recorded in living community memory and saved to the registry.";
+        msg.className = "msg success";
+        form.reset();
+        subBtn.disabled = false;
+        subBtn.textContent = "Record Honor Plot";
+      });
     });
-  }
-
-  function renderStories() {
-    const list = document.getElementById("stories-list");
-    list.innerHTML = "";
-    demoPlots.forEach(p => {
-      const el = document.createElement("div");
-      el.className = "story-card";
-      el.innerHTML = `<div class="story-meta"><span>📍 ${p.place}</span><span>📅 ${p.date}</span></div><div class="story-place">${p.place}</div><div class="story-era">${p.era}</div><div class="story-text">"${p.memory}"</div>`;
-      list.appendChild(el);
-    });
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    startLIFF();
-    renderStories();
-    const form = document.getElementById("plot-form");
-    const msg = document.getElementById("msg");
-    const subBtn = document.getElementById("sub-btn");
-
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      subBtn.disabled = true;
-      subBtn.textContent = "Recording...";
-
-      const p = document.getElementById("place").value;
-      const er = document.getElementById("era").value;
-      const mem = document.getElementById("memory").value;
-      const lat = document.getElementById("geo_lat").value || (39.0997 + (Math.random()-0.5)*3).toFixed(5);
-      const lon = document.getElementById("geo_lon").value || (-94.5786 + (Math.random()-0.5)*3).toFixed(5);
-
-      const payload = {
-        user_id: liffUserId,
-        place_name: p,
-        era_marker: er,
-        memory_reflection: mem,
-        latitude: lat,
-        longitude: lon,
-        safe_harbor_acknowledged: document.getElementById("ack").checked
-      };
-
-      demoPlots.unshift({ place: p, era: er, memory: mem, lat: parseFloat(lat), lon: parseFloat(lon), date: "Just now" });
-      postToSheet(payload);
-
-      msg.textContent = "Your Honor Plot has been recorded in living community memory and saved to the registry.";
-      msg.className = "success";
-      form.reset();
-      subBtn.disabled = false;
-      subBtn.textContent = "Record Honor Plot";
-      setTimeout(() => { showTab('stories'); }, 1400);
-    });
-  });
-</script>
+  </script>
 </body>
 </html>
