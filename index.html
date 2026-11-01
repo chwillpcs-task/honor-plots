@@ -18,7 +18,7 @@
       --bg: #FDFBF7;
       --surface: #FFFFFF;
       --text: #1F2937;
-      --muted: #4B5563;
+      --muted: #6B7280;
       --border: #E5E7EB;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -26,13 +26,15 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.5;
-      padding-bottom: 2rem;
+      line-height: 1.45;
+      min-height: 100vh;
     }
+
+    /* TOP HEADER */
     header.app-header {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
-      padding: 0.75rem 1rem;
+      padding: 0.65rem 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -40,30 +42,103 @@
       top: 0;
       z-index: 1000;
     }
-    .user-info {
+    .user-info { display: flex; align-items: center; gap: 0.5rem; }
+    .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: #E5E7EB; object-fit: cover; }
+    .user-name { font-size: 0.85rem; font-weight: 700; color: var(--text); }
+    .close-btn { background: none; border: none; font-size: 1.25rem; color: var(--muted); cursor: pointer; }
+
+    /* ONBOARDING INTRO CAROUSEL */
+    #intro-screen {
+      max-width: 500px;
+      margin: 1rem auto;
+      padding: 0 1rem;
+    }
+    .intro-card {
+      display: none;
+      background: var(--surface);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      animation: fadeIn 0.3s ease-out;
+    }
+    .intro-card.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .card-media {
+      width: 100%;
+      height: 380px;
+      background: #F3F4F6;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
     }
-    .user-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: #E5E7EB;
+    .card-media img {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
     }
-    .user-name {
-      font-size: 0.85rem;
-      font-weight: 700;
+    .card-body {
+      padding: 1.25rem;
+      text-align: center;
     }
-    .close-btn {
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 0.4rem;
+    }
+    .card-caption {
+      font-size: 0.95rem;
+      color: var(--text);
+      font-style: italic;
+      margin-bottom: 0.75rem;
+    }
+    .see-more-btn {
       background: none;
       border: none;
-      font-size: 1.25rem;
-      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: underline;
       cursor: pointer;
+      display: inline-block;
+      margin-bottom: 1rem;
     }
-    nav.tabs {
+    .details-drawer {
+      display: none;
+      background: #FAF8F5;
+      border-top: 1px dashed var(--border);
+      padding: 0.85rem;
+      font-size: 0.82rem;
+      color: #374151;
+      line-height: 1.45;
+      text-align: left;
+    }
+
+    .action-btn {
+      width: 100%;
+      background: var(--primary);
+      color: #FFF;
+      border: none;
+      border-radius: 10px;
+      padding: 0.85rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 48px;
+    }
+
+    /* MAIN ACTIVE APP INTERFACE (HIDDEN DURING INTRO) */
+    #app-screen {
+      display: none;
+      max-width: 600px;
+      margin: 0 auto;
+      padding-bottom: 5rem;
+    }
+    nav.app-tabs {
       display: flex;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
@@ -73,7 +148,7 @@
       padding: 0.85rem;
       border: none;
       background: none;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 700;
       color: var(--muted);
       cursor: pointer;
@@ -85,40 +160,20 @@
       border-bottom-color: var(--primary);
       background: #FAF8F5;
     }
-    .container {
-      max-width: 600px;
-      margin: 1rem auto;
-      padding: 0 1rem;
-    }
-    .panel { display: none; }
-    .panel.active { display: block; }
-    .card {
+
+    .app-panel { display: none; padding: 1rem; }
+    .app-panel.active { display: block; }
+
+    #map-box { height: 440px; border-radius: 14px; border: 1px solid var(--border); }
+    
+    .form-card {
       background: var(--surface);
-      border-radius: 12px;
+      border-radius: 14px;
       border: 1px solid var(--border);
       padding: 1.25rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-      margin-bottom: 1rem;
-    }
-    h1 {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: var(--primary);
-      margin-bottom: 0.35rem;
-    }
-    p.subtitle {
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin-bottom: 1.25rem;
-      line-height: 1.45;
     }
     .form-group { margin-bottom: 1rem; }
-    label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 700;
-      margin-bottom: 0.35rem;
-    }
+    label { display: block; font-size: 0.82rem; font-weight: 700; margin-bottom: 0.35rem; }
     input[type="text"], textarea {
       width: 100%;
       padding: 0.65rem 0.75rem;
@@ -128,59 +183,30 @@
       background: #FAFAFA;
       color: var(--text);
     }
-    textarea { min-height: 100px; resize: vertical; }
-    .helper {
-      font-size: 0.75rem;
-      color: var(--muted);
-      margin-top: 0.25rem;
-    }
+    textarea { min-height: 90px; resize: vertical; }
+    .helper { font-size: 0.72rem; color: var(--muted); margin-top: 0.25rem; }
+
     .covenant-box {
       background: #F9FAFB;
       border-left: 3px solid var(--primary);
       padding: 0.75rem;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       color: var(--muted);
-      line-height: 1.45;
+      line-height: 1.4;
       margin-bottom: 1rem;
     }
-    .check-group {
+    .check-row {
       display: flex;
       align-items: flex-start;
       gap: 0.5rem;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       margin-bottom: 1.25rem;
     }
-    .check-group input { margin-top: 0.2rem; min-width: 18px; min-height: 18px; }
-    .submit-btn {
-      width: 100%;
-      background: var(--primary);
-      color: #FFFFFF;
-      border: none;
-      border-radius: 8px;
-      padding: 0.85rem;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      min-height: 48px;
-    }
-    .submit-btn:disabled { background: #9CA3AF; cursor: not-allowed; }
-    #status-msg {
-      margin-top: 1rem;
-      padding: 0.75rem;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      display: none;
-    }
-    .success { background: #E6F4EA; color: #137333; display: block !important; }
-    .error { background: #FCE8E6; color: #C5221F; display: block !important; }
-    #map-box {
-      height: 450px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-    }
+    .check-row input { margin-top: 0.15rem; min-width: 18px; min-height: 18px; }
+
     .story-card {
       background: var(--surface);
-      border-radius: 10px;
+      border-radius: 12px;
       border: 1px solid var(--border);
       padding: 1rem;
       margin-bottom: 0.75rem;
@@ -190,13 +216,13 @@
       display: inline-block;
       background: #EBF8FF;
       color: var(--primary);
-      padding: 0.15rem 0.5rem;
+      padding: 0.15rem 0.45rem;
       border-radius: 4px;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
-      margin: 0.25rem 0 0.5rem;
+      margin: 0.25rem 0 0.4rem;
     }
-    .story-reflection { font-size: 0.9rem; color: #374151; font-style: italic; }
+    .story-text { font-size: 0.88rem; color: #374151; font-style: italic; }
   </style>
 </head>
 <body>
@@ -204,71 +230,144 @@
 <header class="app-header">
   <div class="user-info">
     <img id="user-avatar" class="user-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%239CA3AF'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Avatar">
-    <span class="user-name" id="user-name">Honor Plots — Our Times</span>
+    <span class="user-name" id="user-name">Welcome</span>
   </div>
   <button type="button" class="close-btn" onclick="closeApp()">✕</button>
 </header>
 
-<nav class="tabs">
-  <button type="button" class="tab-btn active" onclick="showTab('form')">✍️ Mark Plot</button>
-  <button type="button" class="tab-btn" onclick="showTab('map')">🗺️ Community Map</button>
-  <button type="button" class="tab-btn" onclick="showTab('stories')">📖 Stories</button>
-</nav>
+<!-- ONBOARDING SEQUENCE (4 VISUAL CARDS) -->
+<div id="intro-screen">
+  
+  <!-- CARD 1: WELCOME & DIGNITY -->
+  <div class="intro-card active" id="card-1">
+    <div class="card-media" style="background:#FAF8F5;">
+      <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#0072B2" stroke-width="1.2">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="2" y1="12" x2="22" y2="12"/>
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Our Times</div>
+      <div class="card-caption">Visit Your Era and Space, Honor Both.</div>
+      <button type="button" class="action-btn" onclick="nextCard(2)">Begin Journey →</button>
+    </div>
+  </div>
 
-<div class="container">
-  <!-- FORM TAB -->
-  <div id="tab-form" class="panel active">
-    <div class="card">
-      <h1>Visit Your Era and Space, Honor Both</h1>
-      <p class="subtitle">A living cultural archive. Record a human-scale place and time into the permanent community registry.</p>
+  <!-- CARD 2: SKETCHED PACIFIC GLOBE -->
+  <div class="intro-card" id="card-2">
+    <div class="card-media">
+      <!-- Embedded Hand-Drawn Pacific Globe -->
+      <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=800&q=80" alt="Contemplative Globe" id="globe-img">
+    </div>
+    <div class="card-body">
+      <div class="card-title">The Pacific Bridge</div>
+      <div class="card-caption">"Journeys across an ocean. Landmarks across time."</div>
+      <button type="button" class="see-more-btn" onclick="toggleDetails(2)">[ See more ]</button>
+      <div class="details-drawer" id="details-2">
+        A space is not a municipal tax parcel. It is an ocean crossing, a mid-Pacific coral atoll on childhood travels, or an underground record salon in Tokyo.
+      </div>
+      <button type="button" class="action-btn" onclick="nextCard(3)">Next →</button>
+    </div>
+  </div>
+
+  <!-- CARD 3: GENERATIONAL STRATA (GERMANY) -->
+  <div class="intro-card" id="card-3">
+    <div class="card-media">
+      <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80" alt="Rhine Valley Landscape">
+    </div>
+    <div class="card-body">
+      <div class="card-title">Southwestern Germany</div>
+      <div class="card-caption">"Modern ground. Generations deep."</div>
+      <button type="button" class="see-more-btn" onclick="toggleDetails(3)">[ See more ]</button>
+      <div class="details-drawer" id="details-3">
+        No two people can hold the exact same space and time. Beneath today's modern landscape, each generation holds its own unique year in the permanent ledger.
+      </div>
+      <button type="button" class="action-btn" onclick="nextCard(4)">Next →</button>
+    </div>
+  </div>
+
+  <!-- CARD 4: THE SHAPE OF A HOLDING -->
+  <div class="intro-card" id="card-4">
+    <div class="card-media" style="background:#F4EFEA;">
+      <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#D55E00" stroke-width="1.2">
+        <rect x="3" y="3" width="18" height="18" rx="2"/>
+        <path d="M3 9h18M9 21V9"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">The Shape of a Holding</div>
+      <div class="card-caption">"Memorial panels. Living cultural showcases."</div>
+      <button type="button" class="see-more-btn" onclick="toggleDetails(4)">[ See more ]</button>
+      <div class="details-drawer" id="details-4">
+        From 50 permanent alumni panels on an air base court, to 30-day living car showcases, and hand-carved Hachinohe wooden horses shipped directly to your home.
+      </div>
+      <button type="button" class="action-btn" style="background:#06C755;" onclick="enterApp()">Enter the Living World →</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ACTUAL USAGE INTERFACE -->
+<div id="app-screen">
+  <nav class="app-tabs">
+    <button type="button" class="tab-btn active" onclick="switchTab('map')">🗺️ Map</button>
+    <button type="button" class="tab-btn" onclick="switchTab('form')">✍️ Mark Plot</button>
+    <button type="button" class="tab-btn" onclick="switchTab('stories')">📖 Stories</button>
+  </nav>
+
+  <!-- MAP TAB -->
+  <div id="panel-map" class="app-panel active">
+    <div id="map-box"></div>
+    <p class="helper" style="margin-top:0.5rem; text-align:center;">Tap any marker to view recorded memories, or tap anywhere on Earth to place a plot.</p>
+  </div>
+
+  <!-- CLAIM FORM TAB -->
+  <div id="panel-form" class="app-panel">
+    <div class="form-card">
+      <h2 style="font-size:1.15rem; color:var(--primary); margin-bottom:0.25rem;">Record an Honor Plot</h2>
+      <p class="helper" style="margin-bottom:1rem;">Anchor a human-scale place and time into the permanent registry.</p>
       
       <form id="plot-form">
         <div class="form-group">
           <div style="display:flex; justify-content:space-between; align-items:center;">
             <label for="place_name" style="margin-bottom:0;">Place or Landmark</label>
-            <button type="button" onclick="captureGPS()" style="background:none; border:1px solid var(--primary); color:var(--primary); font-size:0.75rem; font-weight:700; padding:0.2rem 0.5rem; border-radius:4px; cursor:pointer;">📍 Use Current Location</button>
+            <button type="button" onclick="getGPS()" style="background:none; border:1px solid var(--primary); color:var(--primary); font-size:0.72rem; font-weight:700; padding:0.15rem 0.4rem; border-radius:4px; cursor:pointer;">📍 Use GPS</button>
           </div>
-          <input type="text" id="place_name" required placeholder="e.g., Brown Sugar Ebisu, 12th & Vine, Wake Island" style="margin-top:0.35rem;">
+          <input type="text" id="place_name" required placeholder="e.g., Brown Sugar Ebisu, 12th & Vine, Wake Island" style="margin-top:0.25rem;">
           <input type="hidden" id="geo_lat" value="">
           <input type="hidden" id="geo_lon" value="">
-          <div class="helper" id="gps-status">A specific corner, porch, venue, or transit stop.</div>
+          <div class="helper" id="gps-status">A specific district, venue, crossroads, or transit atoll.</div>
         </div>
 
         <div class="form-group">
           <label for="era_marker">Era or Time Marker</label>
           <input type="text" id="era_marker" required placeholder="e.g., Summer 1974, Autumn 1982, My childhood years">
-          <div class="helper">A year, season, or personal era—exact calendar dates are not required.</div>
+          <div class="helper">A year, season, or era—exact calendar dates are not required.</div>
         </div>
 
         <div class="form-group">
           <label for="memory_reflection">Story or Memory</label>
-          <textarea id="memory_reflection" required placeholder="What do you remember about this place in that era? In your own words."></textarea>
-          <div class="helper">Small, everyday human memories are honored here.</div>
+          <textarea id="memory_reflection" required placeholder="In your own words. Small everyday memories are welcomed."></textarea>
         </div>
 
         <div class="covenant-box">
-          <strong>Fiduciary & Cultural Standard:</strong> TASK operates as a verified digital instruction rail supporting sovereign community networks. Every plot is an immutable cultural tribute stowed under the Duty of Care of a Faithful Manager (<em>zenryu-naru-kanrisha-no-chui-gimu</em> under Japanese Civil Code Sec. 644). Subject to participant's independent tax and legal counsel.
+          <strong>Fiduciary & Cultural Standard:</strong> Every plot is an immutable cultural tribute stowed under the Duty of Care of a Faithful Manager (<em>zenryu-naru-kanrisha-no-chui-gimu</em> under Japanese Civil Code Sec. 644). Subject to participant's independent tax and legal counsel.
         </div>
 
-        <div class="check-group">
-          <input type="checkbox" id="safe_harbor" required>
-          <label for="safe_harbor">I establish this symbolic personal tribute in the permanent registry.</label>
+        <div class="check-row">
+          <input type="checkbox" id="ack" required>
+          <label for="ack">I establish this symbolic personal tribute in the permanent registry.</label>
         </div>
 
-        <button type="submit" class="submit-btn" id="submit-btn">Record Honor Plot</button>
+        <button type="submit" class="action-btn" id="sub-btn">Record Honor Plot</button>
       </form>
-      <div id="status-msg"></div>
+      <div id="status-msg" style="display:none; margin-top:0.75rem; padding:0.75rem; border-radius:8px; font-size:0.85rem;"></div>
     </div>
   </div>
 
-  <!-- MAP TAB -->
-  <div id="tab-map" class="panel">
-    <div id="map-box"></div>
-    <p class="helper" style="margin-top:0.5rem; text-align:center;">Tap any marker to view the community memory recorded at that location.</p>
-  </div>
-
   <!-- STORIES TAB -->
-  <div id="tab-stories" class="panel">
+  <div id="panel-stories" class="app-panel">
     <div id="stories-feed"></div>
   </div>
 </div>
@@ -279,34 +378,10 @@
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyBDmGnjgcH5Zh_S88p_s_z_Vr2Qwa1Ex463GkA3cxj-wVeFdpMRa6KzPggmU2SVxPfhg/exec";
 
   const communityPlots = [
-    {
-      place: "Brown Sugar (Ebisu, Tokyo)",
-      era: "1980s–Present",
-      reflection: "Legendary soul and R&B listening sanctuary bridging cultures across the Pacific. Love the music here and the people always remember me.",
-      lat: 35.6467,
-      lon: 139.7101
-    },
-    {
-      place: "12th & Vine (Kansas City)",
-      era: "Summer 1974",
-      reflection: "Grandmother's porch on Sunday afternoons. Gospel records drifting from across the street, and sweet watermelon slices on ice.",
-      lat: 39.0997,
-      lon: -94.5786
-    },
-    {
-      place: "Wake Island Airstrip",
-      era: "Childhood Pacific Crossing",
-      reflection: "My first trip to Japan as a child, landing on Wake Island—pure magic in the middle of the ocean.",
-      lat: 19.2796,
-      lon: 166.6499
-    },
-    {
-      place: "Radio Row (Lower Manhattan)",
-      era: "c. 1950s",
-      reflection: "Historic Cortlandt and Greenwich Street storefronts before the superblock, where everyday craft and neighborhood commerce thrived.",
-      lat: 40.7118,
-      lon: -74.0131
-    }
+    { place: "Brown Sugar (Ebisu, Tokyo)", era: "1980s–Present", reflection: "Legendary soul and R&B listening sanctuary bridging cultures across the Pacific. Love the music here and the people always remember me.", lat: 35.6467, lon: 139.7101 },
+    { place: "12th & Vine (Kansas City)", era: "Summer 1974", reflection: "Sunday afternoons with gospel records drifting from across the street, and sweet watermelon slices on ice.", lat: 39.0997, lon: -94.5786 },
+    { place: "Wake Island Airstrip", era: "Childhood Pacific Crossing", reflection: "My first trip to Japan as a child, landing on Wake Island—pure magic in the middle of the ocean.", lat: 19.2796, lon: 166.6499 },
+    { place: "Radio Row (Lower Manhattan)", era: "c. 1950s", reflection: "Historic Cortlandt and Greenwich Street storefronts before the superblock, where everyday craft and neighborhood commerce thrived.", lat: 40.7118, lon: -74.0131 }
   ];
 
   let map = null;
@@ -318,7 +393,7 @@
       if (liff.isLoggedIn()) {
         const profile = await liff.getProfile();
         liffUserId = profile.userId;
-        document.getElementById("user-name").textContent = profile.displayName;
+        document.getElementById("user-name").textContent = "Welcome, " + profile.displayName;
         if (profile.pictureUrl) {
           document.getElementById("user-avatar").src = profile.pictureUrl;
         }
@@ -329,19 +404,31 @@
   }
 
   function closeApp() {
-    if (liff.isInClient()) {
-      liff.closeWindow();
-    } else {
-      window.close();
-    }
+    if (liff.isInClient()) { liff.closeWindow(); } else { window.close(); }
   }
 
-  function showTab(tabName) {
-    document.querySelectorAll(".tab-btn").forEach((btn, idx) => {
-      btn.classList.toggle("active", (tabName === 'form' && idx === 0) || (tabName === 'map' && idx === 1) || (tabName === 'stories' && idx === 2));
+  function nextCard(cardNum) {
+    document.querySelectorAll(".intro-card").forEach(c => c.classList.remove("active"));
+    document.getElementById("card-" + cardNum).classList.add("active");
+  }
+
+  function toggleDetails(cardNum) {
+    const el = document.getElementById("details-" + cardNum);
+    el.style.display = el.style.display === "block" ? "none" : "block";
+  }
+
+  function enterApp() {
+    document.getElementById("intro-screen").style.display = "none";
+    document.getElementById("app-screen").style.display = "block";
+    switchTab('map');
+  }
+
+  function switchTab(tabName) {
+    document.querySelectorAll(".tab-btn").forEach((b, i) => {
+      b.classList.toggle("active", (tabName==='map'&&i===0)||(tabName==='form'&&i===1)||(tabName==='stories'&&i===2));
     });
-    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
-    document.getElementById("tab-" + tabName).classList.add("active");
+    document.querySelectorAll(".app-panel").forEach(p => p.classList.remove("active"));
+    document.getElementById("panel-" + tabName).classList.add("active");
     if (tabName === 'map') initMap();
     if (tabName === 'stories') renderStories();
   }
@@ -360,29 +447,35 @@
         if (!document.getElementById("place_name").value) {
           document.getElementById("place_name").value = "Coordinate (" + e.latlng.lat.toFixed(4) + ", " + e.latlng.lng.toFixed(4) + ")";
         }
-        showTab('form');
+        switchTab('form');
       });
     }
     setTimeout(() => { map.invalidateSize(); }, 200);
 
     markers.forEach(m => map.removeLayer(m));
     markers = [];
-
     communityPlots.forEach(p => {
-      const marker = L.circleMarker([p.lat, p.lon], {
-        radius: 9,
-        fillColor: "#0072B2",
-        color: "#FFFFFF",
-        weight: 2,
-        fillOpacity: 0.95
+      const m = L.circleMarker([p.lat, p.lon], {
+        radius: 9, fillColor: "#0072B2", color: "#FFFFFF", weight: 2, fillOpacity: 0.95
       }).addTo(map);
+      m.bindPopup(`<strong style="color:#0072B2;">${p.place}</strong><br><small style="font-weight:700;">${p.era}</small><p style="margin-top:0.35rem; font-style:italic;">"${p.reflection}"</p>`);
+      markers.push(m);
+    });
+  }
 
-      marker.bindPopup(`
-        <strong style="color:#0072B2;">${p.place}</strong><br>
-        <small style="font-weight:700; color:#555;">${p.era}</small>
-        <p style="margin-top:0.35rem; font-style:italic;">"${p.reflection}"</p>
-      `);
-      markers.push(marker);
+  function getGPS() {
+    const status = document.getElementById("gps-status");
+    if (!navigator.geolocation) return;
+    status.textContent = "Locating...";
+    navigator.geolocation.getCurrentPosition((pos) => {
+      const lat = pos.coords.latitude.toFixed(5);
+      const lon = pos.coords.longitude.toFixed(5);
+      document.getElementById("geo_lat").value = lat;
+      document.getElementById("geo_lon").value = lon;
+      status.textContent = "📍 GPS Captured: " + lat + ", " + lon;
+      if (!document.getElementById("place_name").value) {
+        document.getElementById("place_name").value = "Location (" + lat + ", " + lon + ")";
+      }
     });
   }
 
@@ -392,33 +485,8 @@
     communityPlots.forEach(p => {
       const el = document.createElement("div");
       el.className = "story-card";
-      el.innerHTML = `
-        <div class="story-place">${p.place}</div>
-        <div class="story-era">${p.era}</div>
-        <div class="story-reflection">"${p.reflection}"</div>
-      `;
+      el.innerHTML = `<div class="story-place">${p.place}</div><div class="story-era">${p.era}</div><div class="story-text">"${p.reflection}"</div>`;
       feed.appendChild(el);
-    });
-  }
-
-  function captureGPS() {
-    const status = document.getElementById("gps-status");
-    if (!navigator.geolocation) {
-      status.textContent = "GPS not supported on this browser.";
-      return;
-    }
-    status.textContent = "Locating your position...";
-    navigator.geolocation.getCurrentPosition((pos) => {
-      const lat = pos.coords.latitude.toFixed(5);
-      const lon = pos.coords.longitude.toFixed(5);
-      document.getElementById("geo_lat").value = lat;
-      document.getElementById("geo_lon").value = lon;
-      status.textContent = "📍 Location captured: " + lat + ", " + lon;
-      if (!document.getElementById("place_name").value) {
-        document.getElementById("place_name").value = "Location (" + lat + ", " + lon + ")";
-      }
-    }, (err) => {
-      status.textContent = "Unable to read GPS: " + err.message;
     });
   }
 
@@ -428,18 +496,15 @@
 
     const form = document.getElementById("plot-form");
     const msg = document.getElementById("status-msg");
-    const btn = document.getElementById("submit-btn");
+    const btn = document.getElementById("sub-btn");
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       btn.disabled = true;
-      btn.textContent = "Saving to Registry...";
-      msg.className = "";
-      msg.style.display = "none";
-
+      btn.textContent = "Recording to Registry...";
       const place = document.getElementById("place_name").value.trim();
       const era = document.getElementById("era_marker").value.trim();
-      const reflection = document.getElementById("memory_reflection").value.trim();
+      const mem = document.getElementById("memory_reflection").value.trim();
       const lat = document.getElementById("geo_lat").value || "35.6467";
       const lon = document.getElementById("geo_lon").value || "139.7101";
 
@@ -447,10 +512,10 @@
         user_id: liffUserId,
         place_name: place,
         era_marker: era,
-        memory_reflection: reflection,
+        memory_reflection: mem,
         latitude: lat,
         longitude: lon,
-        safe_harbor_acknowledged: document.getElementById("safe_harbor").checked
+        safe_harbor_acknowledged: document.getElementById("ack").checked
       };
 
       try {
@@ -461,21 +526,17 @@
           body: JSON.stringify(payload)
         });
 
-        communityPlots.unshift({
-          place: place,
-          era: era,
-          reflection: reflection,
-          lat: parseFloat(lat),
-          lon: parseFloat(lon)
-        });
-
+        communityPlots.unshift({ place: place, era: era, reflection: mem, lat: parseFloat(lat), lon: parseFloat(lon) });
+        msg.style.display = "block";
         msg.textContent = "Your Honor Plot has been recorded in the permanent registry.";
-        msg.className = "success";
+        msg.className = "helper";
+        msg.style.color = "#009E73";
         form.reset();
-        setTimeout(() => { showTab('stories'); }, 1200);
+        setTimeout(() => { switchTab('stories'); }, 1200);
       } catch (err) {
-        msg.textContent = "Failed to record: " + err.message;
-        msg.className = "error";
+        msg.style.display = "block";
+        msg.textContent = "Submission error: " + err.message;
+        msg.style.color = "#D55E00";
       } finally {
         btn.disabled = false;
         btn.textContent = "Record Honor Plot";
