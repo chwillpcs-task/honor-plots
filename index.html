@@ -2,382 +2,585 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Honor Plots - LINE Mini App</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Honor Plots — Our Times</title>
+  <meta name="description" content="Visit Your Era and Space, Honor Both. A living cultural archive and community memory registry.">
+  
+  <!-- LINE LIFF SDK -->
+  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <!-- Leaflet Map CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     :root {
       --line-green: #06C755;
-      --line-green-dark: #05b04b;
-      --bg-light: #F7F9FA;
+      --primary: #0072B2;       /* Okabe-Ito Blue */
+      --secondary: #009E73;     /* Okabe-Ito Bluish Green */
+      --accent: #D55E00;        /* Okabe-Ito Vermilion */
+      --bg: #F5F6F8;
       --card-bg: #FFFFFF;
-      --text-main: #111111;
-      --text-sub: #666666;
-      --border-color: #EAEAEA;
-      --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      --text: #111827;
+      --muted: #6B7280;
+      --border: #E5E7EB;
+      --scarcity: #DC2626;
     }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-light);
-      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      padding-bottom: 5rem;
+    }
+    header.line-nav {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border);
+      padding: 0.65rem 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .line-user-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .line-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #E5E7EB;
+      object-fit: cover;
+      border: 1.5px solid var(--line-green);
+    }
+    .line-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .line-badge {
+      font-size: 0.68rem;
+      color: var(--line-green);
+      font-weight: 700;
+    }
+    .line-close-x {
+      background: none;
+      border: none;
+      font-size: 1.35rem;
+      color: #9CA3AF;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0.25rem;
+    }
+    .container {
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 0.85rem;
+    }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .hero-box {
+      background: #FFFFFF;
+      border-radius: 16px;
+      padding: 1.25rem;
+      margin-bottom: 0.85rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .hero-h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 0.35rem;
+      line-height: 1.35;
+    }
+    .hero-sub {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .scarcity-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #FEF2F2;
+      border: 1px solid #FCA5A5;
+      padding: 0.35rem 0.65rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--scarcity);
+      margin-top: 0.65rem;
+    }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin: 1.15rem 0 0.5rem;
+      padding: 0 0.25rem;
+    }
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .section-hint {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+    .carousel-wrap {
+      display: flex;
+      gap: 0.75rem;
+      overflow-x: auto;
+      padding: 0.25rem 0.25rem 0.75rem;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .carousel-wrap::-webkit-scrollbar { display: none; }
+    
+    .flex-card {
+      flex: 0 0 250px;
+      background: #FFFFFF;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      cursor: pointer;
       display: flex;
       flex-direction: column;
-      height: 100vh;
-      width: 100vw;
-      overflow: hidden;
+      transition: transform 0.15s ease;
     }
-    .line-header {
-      height: 56px;
-      background: #FFFFFF;
-      border-bottom: 1px solid var(--border-color);
+    .flex-card:active { transform: scale(0.98); }
+    .card-top {
+      background: #F8FAFC;
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 0 16px;
-      z-index: 1000;
-    }
-    .header-left {
-      display: flex;
       align-items: center;
-      gap: 12px;
     }
-    .header-icon {
-      width: 24px;
-      height: 24px;
-      cursor: pointer;
-      fill: var(--text-main);
-    }
-    .header-title {
-      font-size: 17px;
+    .card-tag {
+      background: var(--primary);
+      color: #FFF;
+      font-size: 0.68rem;
       font-weight: 700;
-      letter-spacing: -0.3px;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
     }
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .profile-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--line-green);
-      color: #FFFFFF;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 14px;
-      border: 2px solid #FFFFFF;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-      cursor: pointer;
-    }
-    .app-body {
+    .card-body {
+      padding: 0.85rem;
       flex: 1;
-      position: relative;
-      width: 100%;
-      height: calc(100vh - 116px);
-    }
-    #map {
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-    }
-    .leaflet-control-attribution {
-      display: none !important;
-    }
-    .carousel-container {
-      position: absolute;
-      bottom: 12px;
-      left: 0;
-      right: 0;
-      z-index: 500;
       display: flex;
-      overflow-x: auto;
-      gap: 12px;
-      padding: 8px 16px;
-      scroll-snap-type: x mandatory;
-      scrollbar-width: none;
+      flex-direction: column;
+      justify-content: space-between;
     }
-    .carousel-container::-webkit-scrollbar {
-      display: none;
-    }
-    .hub-card {
-      flex: 0 0 280px;
-      scroll-snap-align: center;
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 16px;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border-color);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      cursor: pointer;
-    }
-    .hub-card:active {
-      transform: scale(0.98);
-    }
-    .card-badge {
-      display: inline-block;
-      padding: 4px 8px;
-      background: rgba(6, 199, 85, 0.1);
-      color: var(--line-green);
-      font-size: 11px;
-      font-weight: 600;
-      border-radius: 6px;
-      margin-bottom: 8px;
-    }
-    .card-title {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 4px;
-      color: var(--text-main);
+    .card-h2 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 0.25rem;
     }
     .card-desc {
-      font-size: 13px;
-      color: var(--text-sub);
-      line-height: 1.4;
-      margin-bottom: 12px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.45;
+      margin-bottom: 0.75rem;
     }
-    .card-action {
-      width: 100%;
-      padding: 8px 0;
+    .card-btn {
       background: var(--line-green);
-      color: #FFFFFF;
+      color: #FFF;
       border: none;
       border-radius: 8px;
-      font-weight: 600;
-      font-size: 13px;
-      cursor: pointer;
+      padding: 0.65rem;
+      font-size: 0.85rem;
+      font-weight: 700;
       text-align: center;
+      cursor: pointer;
     }
-    .modal-overlay {
+    #era-sheet {
+      display: none;
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.4);
+      inset: 0;
+      background: rgba(0,0,0,0.5);
       z-index: 2000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
+      align-items: flex-end;
     }
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .bottom-sheet {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
+    .sheet-content {
       background: #FFFFFF;
-      border-top-left-radius: 24px;
-      border-top-right-radius: 24px;
-      z-index: 2001;
-      transform: translateY(100%);
-      transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
-      padding: 20px 24px 32px 24px;
-      max-height: 80vh;
+      width: 100%;
+      max-width: 540px;
+      margin: 0 auto;
+      border-radius: 20px 20px 0 0;
+      padding: 1.25rem;
+      max-height: 85vh;
       overflow-y: auto;
-      box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
+      animation: sheetUp 0.25s ease-out;
     }
-    .bottom-sheet.active {
-      transform: translateY(0);
+    @keyframes sheetUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
     }
     .sheet-handle {
-      width: 36px;
+      width: 40px;
       height: 4px;
-      background: #DDD;
+      background: #D1D5DB;
       border-radius: 2px;
-      margin: 0 auto 16px auto;
+      margin: 0 auto 0.85rem;
     }
     .sheet-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
+      align-items: flex-start;
+      margin-bottom: 0.85rem;
     }
     .sheet-title {
-      font-size: 18px;
-      font-weight: 700;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text);
     }
     .sheet-close {
-      font-size: 20px;
-      color: var(--text-sub);
-      cursor: pointer;
+      background: #F3F4F6;
       border: none;
-      background: none;
-    }
-    .era-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .era-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 16px;
-      background: var(--bg-light);
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      font-size: 1rem;
+      color: var(--muted);
       cursor: pointer;
-      transition: background 0.2s;
     }
-    .era-item.selected {
-      border-color: var(--line-green);
-      background: rgba(6, 199, 85, 0.05);
-    }
-    .era-name {
-      font-weight: 600;
-      font-size: 15px;
-    }
-    .era-period {
-      font-size: 12px;
-      color: var(--text-sub);
-    }
-    .line-navbar {
-      height: 60px;
-      background: #FFFFFF;
-      border-top: 1px solid var(--border-color);
+    .era-pill-row {
       display: flex;
-      justify-content: space-around;
+      gap: 0.4rem;
+      overflow-x: auto;
+      margin-bottom: 1rem;
+      padding-bottom: 0.25rem;
+    }
+    .era-pill {
+      padding: 0.45rem 0.85rem;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: #F9FAFB;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--muted);
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .era-pill.active {
+      background: var(--primary);
+      color: #FFF;
+      border-color: var(--primary);
+    }
+    .era-desc-card {
+      background: #FAF8F5;
+      border: 1px solid #E5E0D8;
+      border-radius: 10px;
+      padding: 0.95rem;
+      margin-bottom: 1rem;
+    }
+    .era-desc-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 0.35rem;
+    }
+    .era-desc-body {
+      font-size: 0.85rem;
+      color: #374151;
+      line-height: 1.45;
+      margin-bottom: 0.65rem;
+    }
+    .era-quote {
+      font-size: 0.85rem;
+      font-style: italic;
+      color: #1F2937;
+      border-left: 3px solid var(--accent);
+      padding-left: 0.5rem;
+      line-height: 1.4;
+    }
+    .stack-card {
+      background: #FFFFFF;
+      border-radius: 16px;
+      padding: 1.15rem;
+      border: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+    .stack-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      margin-bottom: 0.5rem;
+      color: #374151;
+    }
+    .stack-check { color: var(--secondary); font-weight: 800; }
+    .price-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-top: 0.75rem;
+      margin-top: 0.5rem;
+      border-top: 1px dashed var(--border);
+    }
+    .price-was { font-size: 0.8rem; color: #9CA3AF; text-decoration: line-through; }
+    .price-now { font-size: 1.25rem; font-weight: 900; color: var(--accent); }
+    .btn {
+      width: 100%;
+      background: var(--accent);
+      color: #FFF;
+      border: none;
+      border-radius: 10px;
+      padding: 0.9rem;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      min-height: 48px;
+      display: flex;
       align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+    .btn-green { background: var(--line-green); }
+    .form-card {
+      background: #FFFFFF;
+      border-radius: 16px;
+      padding: 1.25rem;
+      border: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+    .form-group { margin-bottom: 0.85rem; }
+    .form-group label { display: block; font-size: 0.82rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      font-size: 0.92rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #FAFAFA;
+      color: var(--text);
+    }
+    .form-group textarea { min-height: 85px; }
+    .notice-box {
+      background: #F9FAFB;
+      border-left: 3px solid var(--primary);
+      padding: 0.65rem;
+      font-size: 0.74rem;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-bottom: 0.85rem;
+    }
+    .check-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.45rem;
+      font-size: 0.78rem;
+      margin-bottom: 1rem;
+    }
+    .check-row input { margin-top: 0.15rem; min-width: 18px; min-height: 18px; }
+    #map-box {
+      height: 420px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      margin-bottom: 1rem;
+      z-index: 1;
+    }
+    .story-card {
+      background: #FFFFFF;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .story-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-bottom: 0.35rem;
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 0.25rem;
+    }
+    .story-place { font-size: 0.95rem; font-weight: 800; color: var(--primary); }
+    .story-era {
+      display: inline-block;
+      background: #EBF8FF;
+      color: #0072B2;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin: 0.2rem 0;
+    }
+    .story-text { font-size: 0.85rem; color: #374151; font-style: italic; }
+    nav.bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #FFFFFF;
+      border-top: 1px solid var(--border);
+      display: flex;
       z-index: 1000;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.03);
     }
     .nav-item {
+      flex: 1;
+      padding: 0.6rem 0.2rem;
+      border: none;
+      background: none;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
-      color: var(--text-sub);
-      text-decoration: none;
-      font-size: 10px;
-      font-weight: 600;
-      cursor: pointer;
+      gap: 0.2rem;
     }
     .nav-item.active {
       color: var(--line-green);
     }
-    .nav-icon {
-      width: 22px;
-      height: 22px;
-      fill: currentColor;
-    }
   </style>
 </head>
 <body>
-  <!-- LINE Mini App Header -->
-  <header class="line-header">
-    <div class="header-left">
-      <svg class="header-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-      <span class="header-title">Honor Plots</span>
-    </div>
-    <div class="header-right">
-      <div class="profile-avatar" onclick="openProfile()">LN</div>
-    </div>
-  </header>
-  <div class="app-body">
-    <div id="map"></div>
-    <div class="carousel-container" id="hubCarousel">
-      <div class="hub-card" onclick="focusHub(35.6812, 139.7671, 'Tokyo Imperial Hub')">
-        <span class="card-badge">Edo Era</span>
-        <div class="card-title">Tokyo Imperial Hub</div>
-        <div class="card-desc">Historic epicenter of governance, gardens, and monumental landmarks.</div>
-        <button class="card-action">View Hub</button>
-      </div>
-      <div class="hub-card" onclick="focusHub(35.0116, 135.7681, 'Kyoto Sanctuary')">
-        <span class="card-badge">Heian Era</span>
-        <div class="card-title">Kyoto Sanctuary</div>
-        <div class="card-desc">Ancient cultural heritage site showcasing traditional wooden architecture.</div>
-        <button class="card-action">View Hub</button>
-      </div>
-      <div class="hub-card" onclick="focusHub(34.6937, 135.5023, 'Osaka Citadel')">
-        <span class="card-badge">Sengoku Era</span>
-        <div class="card-title">Osaka Citadel</div>
-        <div class="card-desc">Strategic fortress hub with rich samurai history and vibrant commerce.</div>
-        <button class="card-action">View Hub</button>
-      </div>
+<header class="line-nav">
+  <div class="line-user-wrap">
+    <img id="user-avatar" class="line-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%239CA3AF'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="LINE User">
+    <div>
+      <div class="line-title" id="user-display-name">Welcome to Our Times</div>
+      <div class="line-badge">● Active LINE LIFF Session</div>
     </div>
   </div>
-  <div class="modal-overlay" id="modalOverlay" onclick="closeEraModal()"></div>
-  <div class="bottom-sheet" id="eraModal">
+  <button type="button" class="line-close-x" onclick="closeLIFF()">✕</button>
+</header>
+<div class="container">
+  <div id="view-home" class="panel active">
+    <div class="hero-box">
+      <h1 class="hero-h1">Visit Your Era and Space, Honor Both</h1>
+      <p class="hero-sub">Our Times is a living cultural archive. Explore community hubs across the Pacific, peel back their historical eras, and hold your permanent Honor Plot.</p>
+      <div class="scarcity-pill">
+        <span>⚡ 37 of 100 Founding Holdings Claimed</span>
+        <span>•</span>
+        <span>63 Available</span>
+      </div>
+    </div>
+    <div class="section-head">
+      <span class="section-title">Discovered Places & Eras</span>
+      <span class="section-hint">Swipe to explore →</span>
+    </div>
+    <div class="carousel-wrap" id="hub-carousel"></div>
+    <div class="section-head">
+      <span class="section-title">Founding Patron Stewardship</span>
+    </div>
+    <div class="stack-card">
+      <div class="stack-row"><span class="stack-check">✓</span><div><strong>Permanent Map & Ledger Anchor:</strong> Verified entry in the global trans-Pacific registry.</div></div>
+      <div class="stack-row"><span class="stack-check">✓</span><div><strong>Embossed Holding Certificate:</strong> Archival physical parchment stamped and mailed.</div></div>
+      <div class="stack-row"><span class="stack-check">✓</span><div><strong>VIP LINE Patron Badge:</strong> Permanent patron designation inside your LINE profile.</div></div>
+      <div class="stack-row"><span class="stack-check">✓</span><div><strong>Tokyo 2027 Book Imprint:</strong> Inscribed in the bound Master Chronology Volume I.</div></div>
+      <div class="stack-row"><span class="stack-check">✓</span><div><strong>Cultural Gala Invitations:</strong> VIP access to private listening dinners and salons.</div></div>
+      <div class="price-strip">
+        <span class="price-was">Value: $1,250</span>
+        <span class="price-now">$150 / ¥22,000</span>
+      </div>
+      <button type="button" class="btn" style="margin-top:0.75rem;" onclick="openClaimForm(null, null)">
+        Secure Your Founding Honor Plot →
+      </button>
+    </div>
+  </div>
+  <div id="view-map" class="panel">
+    <div class="hero-box">
+      <h1 class="hero-h1">The Discovery Map</h1>
+      <p class="hero-sub">Clean OpenStreetMap view. Tap any blue hub to view its eras, or tap anywhere to place a custom plot.</p>
+    </div>
+    <div id="map-box"></div>
+  </div>
+  <div id="view-form" class="panel">
+    <div class="form-card">
+      <h1 class="hero-h1">Secure Your Founding Honor Plot</h1>
+      <p class="hero-sub" style="margin-bottom:0.85rem;">Lock in your permanent stewardship holding in the 2026–2027 Founding Registry.</p>
+      <form id="plot-form">
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label for="place" style="margin-bottom:0;">Place or Landmark</label>
+            <button type="button" onclick="getGPS()" style="background:none; border:1px solid var(--primary); color:var(--primary); font-size:0.72rem; font-weight:700; padding:0.15rem 0.4rem; border-radius:4px; cursor:pointer;">📍 Device GPS</button>
+          </div>
+          <input type="text" id="place" required placeholder="e.g., Brown Sugar Ebisu, 12th & Vine, Cortlandt St" style="margin-top:0.25rem;">
+          <input type="hidden" id="geo_lat" value="">
+          <input type="hidden" id="geo_lon" value="">
+        </div>
+        <div class="form-group">
+          <label for="era">Era or Time Marker</label>
+          <input type="text" id="era" required placeholder="e.g., Summer 1974, Radio Row 1950s, 2026">
+        </div>
+        <div class="form-group">
+          <label for="memory">Honor Plot Reflection & Dedication</label>
+          <textarea id="memory" required placeholder="Who or what are you honoring at this place in that era?"></textarea>
+        </div>
+        <div class="notice-box">
+          <strong>Sovereign Fiduciary Covenant:</strong> TASK operates as the verified digital instruction rail, empowering sovereign Japanese NPO networks and municipal managers in the field. Stewarded under the Duty of Care of a Faithful Manager (<em>zenryu-naru-kanrisha-no-chui-gimu</em> under Japanese Civil Code Sec. 644) and U.S. 100% reserve standards. Subject to participant's independent tax and legal counsel.
+        </div>
+        <div class="check-row">
+          <input type="checkbox" id="ack" required>
+          <label for="ack">I establish this permanent cultural tribute in the 2026–2027 Founding Registry.</label>
+        </div>
+        <button type="submit" class="btn" id="sub-btn">Lock in Founding Honor Plot ($150 / ¥22,000)</button>
+      </form>
+      <div id="msg" style="display:none; margin-top:0.75rem; padding:0.75rem; border-radius:8px; font-size:0.85rem;"></div>
+    </div>
+  </div>
+  <div id="view-stories" class="panel">
+    <div id="stories-feed"></div>
+  </div>
+</div>
+<div id="era-sheet" onclick="closeSheetOnBackdrop(event)">
+  <div class="sheet-content">
     <div class="sheet-handle"></div>
     <div class="sheet-header">
-      <span class="sheet-title">Select Era Filter</span>
-      <button class="sheet-close" onclick="closeEraModal()">&times;</button>
+      <div class="sheet-title" id="sheet-title">Location Name</div>
+      <button type="button" class="sheet-close" onclick="closeSheet()">✕</button>
     </div>
-    <div class="era-list">
-      <div class="era-item selected" onclick="selectEra(this, 'All Eras')">
-        <div>
-          <div class="era-name">All Eras</div>
-          <div class="era-period">Complete historical overview</div>
-        </div>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="var(--line-green)"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-      </div>
-      <div class="era-item" onclick="selectEra(this, 'Heian Era')">
-        <div>
-          <div class="era-name">Heian Era</div>
-          <div class="era-period">794 – 1185 AD</div>
-        </div>
-      </div>
-      <div class="era-item" onclick="selectEra(this, 'Sengoku Era')">
-        <div>
-          <div class="era-name">Sengoku Era</div>
-          <div class="era-period">1467 – 1603 AD</div>
-        </div>
-      </div>
-      <div class="era-item" onclick="selectEra(this, 'Edo Era')">
-        <div>
-          <div class="era-name">Edo Era</div>
-          <div class="era-period">1603 – 1867 AD</div>
-        </div>
-      </div>
-      <div class="era-item" onclick="selectEra(this, 'Modern Epoch')">
-        <div>
-          <div class="era-name">Modern Epoch</div>
-          <div class="era-period">1868 – Present</div>
-        </div>
-      </div>
+    <div style="font-size:0.78rem; font-weight:700; color:var(--muted); margin-bottom:0.4rem;">Select an Era to Explore:</div>
+    <div class="era-pill-row" id="sheet-era-pills"></div>
+    <div class="era-desc-card">
+      <div class="era-desc-title" id="sheet-era-title">Era Title</div>
+      <div class="era-desc-body" id="sheet-era-desc">Historical description...</div>
+      <div class="era-quote" id="sheet-era-quote">"Community memory reflection..."</div>
     </div>
+    <button type="button" class="btn btn-green" id="btn-sheet-claim" onclick="claimFromSheet()">
+      ✍️ Claim This Era ($150 / ¥22,000)
+    </button>
   </div>
-  <nav class="line-navbar">
-    <div class="nav-item active" onclick="switchNav(this)">
-      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      <span>Home</span>
-    </div>
-    <div class="nav-item" onclick="openEraModal()">
-      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 16L12 15.45 7.77 18l1.12-4.81-3.73-3.23 4.92-.42L12 5l1.92 4.53 4.92.42-3.73 3.23L16.23 18z"/></svg>
-      <span>Eras</span>
-    </div>
-    <div class="nav-item" onclick="switchNav(this)">
-      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.91 2.3A1 1 0 0 0 2 6v15a1 1 0 0 0 1.5.86L9 19.9l6 2.1 5.64-1.9A1 1 0 0 0 22 19V4a1 1 0 0 0-1.5-.86zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
-      <span>Map</span>
-    </div>
-    <div class="nav-item" onclick="switchNav(this)">
-      <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-      <span>Profile</span>
-    </div>
-  </nav>
-  <script>
-    const map = L.map('map', { zoomControl: false, attributionControl: false }).setView([35.6812, 139.7671], 11);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 19, subdomains: 'abcd' }).addTo(map);
-    const createCustomIcon = () => L.divIcon({ className: 'custom-map-pin', html: `<div style="background:#06C755; width:24px; height:24px; border-radius:50%; border:3px solid #FFF; box-shadow:0 2px 8px rgba(0,0,0,0.3);"></div>`, iconSize: [24, 24], iconAnchor: [12, 12] });
-    const hubs = [ { lat: 35.6812, lng: 139.7671, title: 'Tokyo Imperial Hub' }, { lat: 35.0116, lng: 135.7681, title: 'Kyoto Sanctuary' }, { lat: 34.6937, lng: 135.5023, title: 'Osaka Citadel' } ];
-    hubs.forEach(hub => { L.marker([hub.lat, hub.lng], { icon: createCustomIcon() }).addTo(map).bindPopup(`<b>${hub.title}</b>`); });
-    function focusHub(lat, lng, name) { map.flyTo([lat, lng], 13, { duration: 1.2 }); }
-    function openEraModal() { document.getElementById('modalOverlay').classList.add('active'); document.getElementById('eraModal').classList.add('active'); }
-    function closeEraModal() { document.getElementById('modalOverlay').classList.remove('active'); document.getElementById('eraModal').classList.remove('active'); }
-    function selectEra(element, eraName) { document.querySelectorAll('.era-item').forEach(item => { item.classList.remove('selected'); }); element.classList.add('selected'); setTimeout(closeEraModal, 250); }
-    function switchNav(element) { document.querySelectorAll('.nav-item').forEach(item => { item.classList.remove('active'); }); element.classList.add('active'); }
-    function openProfile() { alert('LINE Profile Connected'); }
-  </script>
-</body>
-</html>
+</div>
+<nav class="bottom-bar">
+  <button type="button" class="nav-item active" onclick="switchNav('home')">
+    <span>🧭</span><span>Discover</span>
+  </button>
+  <button type="button" class="nav-item" onclick="switchNav('map')">
+    <span>🗺️</span><span>Map</span>
+  </button>
+  <button type="button" class="nav-item" onclick="switchNav('form')">
+    <span>💎</span><span>Hold Plot</span>
+  </button>
+  <button type="button" class="nav-item" onclick="switchNav('stories')">
+    <span>📖</span><span>Stories</span>
+  </button>
+</nav>
+<script>
+  let liffUserId = "anonymous";
+  const LIFF_ID = "2012292060-Vfqk8diJ";
+  const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyBDmGnjgcH5Zh_S88p_s_z_Vr2Qwa1Ex463GkA3cxj-wVeFdpMRa6KzPggmU2SVxPfhg/exec";
+  const hubs = [
+    {
+      id: "hub_wtc",
+      name: "Lower Manhattan & WTC",
+      tag: "3 Living Eras",
+      lat: 40.7118,
+      lon: -74.0131,
+      desc: "From the bustling 1950s Radio Row grid to the Twin Towers and the sacred Memorial Pools.",
+      eras: [
+        { title: "1920s–1950s: Radio Row", what: "Dense historic street grid of brick storefronts along Cortlandt and Greenwich Streets.", quote: "Grandpa bought his first radio tubes on Cortlandt Street in 1952." },
+        { title: "1973–2001: The Twin Towers", what: "The iconic 110-story towers, Austin J. Tobin Plaza, and the central fountain.", quote: "Eating lunch by the fountain on the breezy plaza in summer." },
+        { title: "Present: The Memorial Pools", what: "Twin reflecting
