@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -15,6 +15,7 @@
     :root {
       --primary: #0072B2;       /* Okabe-Ito Blue */
       --secondary: #009E73;     /* Okabe-Ito Bluish Green */
+      --accent: #D55E00;        /* Okabe-Ito Vermilion */
       --bg: #FDFBF7;
       --surface: #FFFFFF;
       --text: #1F2937;
@@ -30,7 +31,6 @@
       min-height: 100vh;
     }
 
-    /* TOP HEADER */
     header.app-header {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
@@ -47,7 +47,7 @@
     .user-name { font-size: 0.85rem; font-weight: 700; color: var(--text); }
     .close-btn { background: none; border: none; font-size: 1.25rem; color: var(--muted); cursor: pointer; }
 
-    /* ONBOARDING INTRO CAROUSEL */
+    /* VISUAL INTRO CARD CAROUSEL */
     #intro-screen {
       max-width: 500px;
       margin: 1rem auto;
@@ -60,42 +60,44 @@
       border: 1px solid var(--border);
       overflow: hidden;
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      animation: fadeIn 0.3s ease-out;
+      animation: fadeIn 0.25s ease-out;
     }
     .intro-card.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
     .card-media {
       width: 100%;
       height: 380px;
-      background: #F3F4F6;
+      background: #F4EFEA;
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
       overflow: hidden;
+      position: relative;
     }
     .card-media img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
+
     .card-body {
       padding: 1.25rem;
       text-align: center;
     }
     .card-title {
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       font-weight: 800;
       color: var(--primary);
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.35rem;
     }
     .card-caption {
       font-size: 0.95rem;
       color: var(--text);
       font-style: italic;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.65rem;
     }
+
     .see-more-btn {
       background: none;
       border: none;
@@ -131,7 +133,7 @@
       min-height: 48px;
     }
 
-    /* MAIN ACTIVE APP INTERFACE (HIDDEN DURING INTRO) */
+    /* MAIN INTERACTIVE APP */
     #app-screen {
       display: none;
       max-width: 600px;
@@ -235,10 +237,10 @@
   <button type="button" class="close-btn" onclick="closeApp()">✕</button>
 </header>
 
-<!-- ONBOARDING SEQUENCE (4 VISUAL CARDS) -->
+<!-- VISUAL ONBOARDING CAROUSEL (5 PURE CARDS) -->
 <div id="intro-screen">
   
-  <!-- CARD 1: WELCOME & DIGNITY -->
+  <!-- CARD 1: WELCOME & INVOCATION -->
   <div class="intro-card active" id="card-1">
     <div class="card-media" style="background:#FAF8F5;">
       <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#0072B2" stroke-width="1.2">
@@ -249,299 +251,18 @@
     </div>
     <div class="card-body">
       <div class="card-title">Our Times</div>
-      <div class="card-caption">Visit Your Era and Space, Honor Both.</div>
+      <div class="card-caption">"Visit Your Era and Space, Honor Both."</div>
       <button type="button" class="action-btn" onclick="nextCard(2)">Begin Journey →</button>
     </div>
   </div>
 
-  <!-- CARD 2: SKETCHED PACIFIC GLOBE -->
+  <!-- CARD 2: THE HORIZON (PACIFIC GLOBE) -->
   <div class="intro-card" id="card-2">
     <div class="card-media">
-      <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=800&q=80" alt="Contemplative Globe" id="globe-img">
+      <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=800&q=80" alt="Pacific Globe">
     </div>
     <div class="card-body">
-      <div class="card-title">The Pacific Bridge</div>
+      <div class="card-title">The Horizon</div>
       <div class="card-caption">"Journeys across an ocean. Landmarks across time."</div>
       <button type="button" class="see-more-btn" onclick="toggleDetails(2)">[ See more ]</button>
-      <div class="details-drawer" id="details-2">
-        A space is not a municipal tax parcel. It is an ocean crossing, a mid-Pacific coral atoll on childhood travels, or an underground record salon in Tokyo.
-      </div>
-      <button type="button" class="action-btn" onclick="nextCard(3)">Next →</button>
-    </div>
-  </div>
-
-  <!-- CARD 3: GENERATIONAL STRATA (GERMANY) -->
-  <div class="intro-card" id="card-3">
-    <div class="card-media">
-      <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80" alt="Rhine Valley Landscape">
-    </div>
-    <div class="card-body">
-      <div class="card-title">Southwestern Germany</div>
-      <div class="card-caption">"Modern ground. Generations deep."</div>
-      <button type="button" class="see-more-btn" onclick="toggleDetails(3)">[ See more ]</button>
-      <div class="details-drawer" id="details-3">
-        No two people can hold the exact same space and time. Beneath today's modern landscape, each generation holds its own unique year in the permanent ledger.
-      </div>
-      <button type="button" class="action-btn" onclick="nextCard(4)">Next →</button>
-    </div>
-  </div>
-
-  <!-- CARD 4: THE SHAPE OF A HOLDING -->
-  <div class="intro-card" id="card-4">
-    <div class="card-media" style="background:#F4EFEA;">
-      <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#D55E00" stroke-width="1.2">
-        <rect x="3" y="3" width="18" height="18" rx="2"/>
-        <path d="M3 9h18M9 21V9"/>
-      </svg>
-    </div>
-    <div class="card-body">
-      <div class="card-title">The Shape of a Holding</div>
-      <div class="card-caption">"Memorial panels. Living cultural showcases."</div>
-      <button type="button" class="see-more-btn" onclick="toggleDetails(4)">[ See more ]</button>
-      <div class="details-drawer" id="details-4">
-        From 50 permanent alumni panels on an air base court, to 30-day living car showcases, and hand-carved Hachinohe wooden horses shipped directly to your home.
-      </div>
-      <button type="button" class="action-btn" style="background:#06C755;" onclick="enterApp()">Enter the Living World →</button>
-    </div>
-  </div>
-
-</div>
-
-<!-- ACTUAL USAGE INTERFACE -->
-<div id="app-screen">
-  <nav class="app-tabs">
-    <button type="button" class="tab-btn active" onclick="switchTab('map')">🗺️ Map</button>
-    <button type="button" class="tab-btn" onclick="switchTab('form')">✍️ Mark Plot</button>
-    <button type="button" class="tab-btn" onclick="switchTab('stories')">📖 Stories</button>
-  </nav>
-
-  <!-- MAP TAB -->
-  <div id="panel-map" class="app-panel active">
-    <div id="map-box"></div>
-    <p class="helper" style="margin-top:0.5rem; text-align:center;">Tap any marker to view recorded memories, or tap anywhere on Earth to place a plot.</p>
-  </div>
-
-  <!-- CLAIM FORM TAB -->
-  <div id="panel-form" class="app-panel">
-    <div class="form-card">
-      <h2 style="font-size:1.15rem; color:var(--primary); margin-bottom:0.25rem;">Record an Honor Plot</h2>
-      <p class="helper" style="margin-bottom:1rem;">Anchor a human-scale place and time into the permanent registry.</p>
-      
-      <form id="plot-form">
-        <div class="form-group">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <label for="place_name" style="margin-bottom:0;">Place or Landmark</label>
-            <button type="button" onclick="getGPS()" style="background:none; border:1px solid var(--primary); color:var(--primary); font-size:0.72rem; font-weight:700; padding:0.15rem 0.4rem; border-radius:4px; cursor:pointer;">📍 Use GPS</button>
-          </div>
-          <input type="text" id="place_name" required placeholder="e.g., Brown Sugar Ebisu, 12th & Vine, Wake Island" style="margin-top:0.25rem;">
-          <input type="hidden" id="geo_lat" value="">
-          <input type="hidden" id="geo_lon" value="">
-          <div class="helper" id="gps-status">A specific district, venue, crossroads, or transit atoll.</div>
-        </div>
-
-        <div class="form-group">
-          <label for="era_marker">Era or Time Marker</label>
-          <input type="text" id="era_marker" required placeholder="e.g., Summer 1974, Autumn 1982, My childhood years">
-          <div class="helper">A year, season, or era—exact calendar dates are not required.</div>
-        </div>
-
-        <div class="form-group">
-          <label for="memory_reflection">Story or Memory</label>
-          <textarea id="memory_reflection" required placeholder="In your own words. Small everyday memories are welcomed."></textarea>
-        </div>
-
-        <div class="covenant-box">
-          <strong>Fiduciary & Cultural Standard:</strong> Every plot is an immutable cultural tribute stowed under the Duty of Care of a Faithful Manager (<em>zenryu-naru-kanrisha-no-chui-gimu</em> under Japanese Civil Code Sec. 644). Subject to participant's independent tax and legal counsel.
-        </div>
-
-        <div class="check-row">
-          <input type="checkbox" id="ack" required>
-          <label for="ack">I establish this symbolic personal tribute in the permanent registry.</label>
-        </div>
-
-        <button type="submit" class="action-btn" id="sub-btn">Record Honor Plot</button>
-      </form>
-      <div id="status-msg" style="display:none; margin-top:0.75rem; padding:0.75rem; border-radius:8px; font-size:0.85rem;"></div>
-    </div>
-  </div>
-
-  <!-- STORIES TAB -->
-  <div id="panel-stories" class="app-panel">
-    <div id="stories-feed"></div>
-  </div>
-</div>
-
-<script>
-  let liffUserId = "anonymous";
-  const LIFF_ID = "2012292060-Vfqk8diJ";
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyBDmGnjgcH5Zh_S88p_s_z_Vr2Qwa1Ex463GkA3cxj-wVeFdpMRa6KzPggmU2SVxPfhg/exec";
-
-  const communityPlots = [
-    { place: "Brown Sugar (Ebisu, Tokyo)", era: "1980s–Present", reflection: "Legendary soul and R&B listening sanctuary bridging cultures across the Pacific. Love the music here and the people always remember me.", lat: 35.6467, lon: 139.7101 },
-    { place: "12th & Vine (Kansas City)", era: "Summer 1974", reflection: "Sunday afternoons with gospel records drifting from across the street, and sweet watermelon slices on ice.", lat: 39.0997, lon: -94.5786 },
-    { place: "Wake Island Airstrip", era: "Childhood Pacific Crossing", reflection: "My first trip to Japan as a child, landing on Wake Island—pure magic in the middle of the ocean.", lat: 19.2796, lon: 166.6499 },
-    { place: "Radio Row (Lower Manhattan)", era: "c. 1950s", reflection: "Historic Cortlandt and Greenwich Street storefronts before the superblock, where everyday craft and neighborhood commerce thrived.", lat: 40.7118, lon: -74.0131 }
-  ];
-
-  let map = null;
-  let markers = [];
-
-  async function initLIFF() {
-    try {
-      await liff.init({ liffId: LIFF_ID });
-      if (liff.isLoggedIn()) {
-        const profile = await liff.getProfile();
-        liffUserId = profile.userId;
-        document.getElementById("user-name").textContent = "Welcome, " + profile.displayName;
-        if (profile.pictureUrl) {
-          document.getElementById("user-avatar").src = profile.pictureUrl;
-        }
-      }
-    } catch (e) {
-      console.log("LIFF standalone view:", e);
-    }
-  }
-
-  function closeApp() {
-    if (liff.isInClient()) { liff.closeWindow(); } else { window.close(); }
-  }
-
-  function nextCard(cardNum) {
-    document.querySelectorAll(".intro-card").forEach(c => c.classList.remove("active"));
-    document.getElementById("card-" + cardNum).classList.add("active");
-  }
-
-  function toggleDetails(cardNum) {
-    const el = document.getElementById("details-" + cardNum);
-    el.style.display = el.style.display === "block" ? "none" : "block";
-  }
-
-  function enterApp() {
-    document.getElementById("intro-screen").style.display = "none";
-    document.getElementById("app-screen").style.display = "block";
-    switchTab('map');
-  }
-
-  function switchTab(tabName) {
-    document.querySelectorAll(".tab-btn").forEach((b, i) => {
-      b.classList.toggle("active", (tabName==='map'&&i===0)||(tabName==='form'&&i===1)||(tabName==='stories'&&i===2));
-    });
-    document.querySelectorAll(".app-panel").forEach(p => p.classList.remove("active"));
-    document.getElementById("panel-" + tabName).classList.add("active");
-    if (tabName === 'map') initMap();
-    if (tabName === 'stories') renderStories();
-  }
-
-  function initMap() {
-    if (!map) {
-      map = L.map('map-box').setView([28.0, -170.0], 2);
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap contributors'
-      }).addTo(map);
-
-      map.on('click', (e) => {
-        document.getElementById("geo_lat").value = e.latlng.lat.toFixed(5);
-        document.getElementById("geo_lon").value = e.latlng.lng.toFixed(5);
-        if (!document.getElementById("place_name").value) {
-          document.getElementById("place_name").value = "Coordinate (" + e.latlng.lat.toFixed(4) + ", " + e.latlng.lng.toFixed(4) + ")";
-        }
-        switchTab('form');
-      });
-    }
-    setTimeout(() => { map.invalidateSize(); }, 200);
-
-    markers.forEach(m => map.removeLayer(m));
-    markers = [];
-    communityPlots.forEach(p => {
-      const m = L.circleMarker([p.lat, p.lon], {
-        radius: 9, fillColor: "#0072B2", color: "#FFFFFF", weight: 2, fillOpacity: 0.95
-      }).addTo(map);
-      m.bindPopup(`<strong style="color:#0072B2;">${p.place}</strong><br><small style="font-weight:700;">${p.era}</small><p style="margin-top:0.35rem; font-style:italic;">"${p.reflection}"</p>`);
-      markers.push(m);
-    });
-  }
-
-  function getGPS() {
-    const status = document.getElementById("gps-status");
-    if (!navigator.geolocation) return;
-    status.textContent = "Locating...";
-    navigator.geolocation.getCurrentPosition((pos) => {
-      const lat = pos.coords.latitude.toFixed(5);
-      const lon = pos.coords.longitude.toFixed(5);
-      document.getElementById("geo_lat").value = lat;
-      document.getElementById("geo_lon").value = lon;
-      status.textContent = "📍 GPS Captured: " + lat + ", " + lon;
-      if (!document.getElementById("place_name").value) {
-        document.getElementById("place_name").value = "Location (" + lat + ", " + lon + ")";
-      }
-    });
-  }
-
-  function renderStories() {
-    const feed = document.getElementById("stories-feed");
-    feed.innerHTML = "";
-    communityPlots.forEach(p => {
-      const el = document.createElement("div");
-      el.className = "story-card";
-      el.innerHTML = `<div class="story-place">${p.place}</div><div class="story-era">${p.era}</div><div class="story-text">"${p.reflection}"</div>`;
-      feed.appendChild(el);
-    });
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    initLIFF();
-    renderStories();
-
-    const form = document.getElementById("plot-form");
-    const msg = document.getElementById("status-msg");
-    const btn = document.getElementById("sub-btn");
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      btn.disabled = true;
-      btn.textContent = "Recording to Registry...";
-      const place = document.getElementById("place_name").value.trim();
-      const era = document.getElementById("era_marker").value.trim();
-      const mem = document.getElementById("memory_reflection").value.trim();
-      const lat = document.getElementById("geo_lat").value || "35.6467";
-      const lon = document.getElementById("geo_lon").value || "139.7101";
-
-      const payload = {
-        user_id: liffUserId,
-        place_name: place,
-        era_marker: era,
-        memory_reflection: mem,
-        latitude: lat,
-        longitude: lon,
-        safe_harbor_acknowledged: document.getElementById("ack").checked
-      };
-
-      try {
-        await fetch(SCRIPT_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        communityPlots.unshift({ place: place, era: era, reflection: mem, lat: parseFloat(lat), lon: parseFloat(lon) });
-        msg.style.display = "block";
-        msg.textContent = "Your Honor Plot has been recorded in the permanent registry.";
-        msg.className = "helper";
-        msg.style.color = "#009E73";
-        form.reset();
-        setTimeout(() => { switchTab('stories'); }, 1200);
-      } catch (err) {
-        msg.style.display = "block";
-        msg.textContent = "Submission error: " + err.message;
-        msg.style.color = "#D55E00";
-      } finally {
-        btn.disabled = false;
-        btn.textContent = "Record Honor Plot";
-      }
-    });
-  });
-</script>
-</body>
-</html>
+      <div class
